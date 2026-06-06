@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الإدارة — مدرسة النور</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #0d2d5e;
+  --primary-mid: #1a4f8a;
+  --primary-light: #2e6db8;
+  --accent: #c8952a;
+  --accent-light: #f0c060;
+  --success: #059669;
+  --danger: #dc2626;
+  --warning: #d97706;
+  --bg: #f0f4f9;
+  --sidebar-w: 260px;
+  --white: #fff;
+  --text: #0f1d35;
+  --text-muted: #5a6a85;
+  --border: #e2e8f0;
+  --radius: 14px;
+  --shadow: 0 2px 16px rgba(13,45,94,0.08);
+  --shadow-lg: 0 8px 32px rgba(13,45,94,0.14);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Cairo',sans-serif; background:var(--bg); color:var(--text); direction:rtl; display:flex; min-height:100vh; }
+
+/* ═══ LOGIN ═══ */
+#loginOverlay {
+  position:fixed; inset:0; z-index:999;
+  background: linear-gradient(135deg, var(--primary) 0%, #0a2244 50%, #1a3d7a 100%);
+  display:flex; align-items:center; justify-content:center;
+  padding:1rem;
+}
+#loginOverlay::before {
+  content:''; position:absolute; inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M30 0l30 30-30 30L0 30z'/%3E%3C/g%3E%3C/svg%3E");
+}
+.login-card {
+  background:white; border-radius:24px; padding:3rem 2.5rem;
+  width:100%; max-width:420px; position:relative;
+  box-shadow:0 32px 80px rgba(0,0,0,0.4);
+}
+.login-logo {
+  width:80px; height:80px; border-radius:20px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-light));
+  display:flex; align-items:center; justify-content:center;
+  font-size:2rem; margin:0 auto 1.5rem; color:var(--primary);
+  box-shadow:0 8px 24px rgba(200,149,42,0.4);
+}
+.login-card h1 { text-align:center; font-size:1.4rem; font-weight:900; color:var(--primary); margin-bottom:0.3rem; }
+.login-card .sub { text-align:center; color:var(--text-muted); font-size:0.85rem; margin-bottom:2rem; }
+.login-field { margin-bottom:1.1rem; }
+.login-field label { font-size:0.8rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px; }
+.login-field input {
+  width:100%; padding:12px 14px; border:1.5px solid var(--border);
+  border-radius:10px; font-family:'Cairo',sans-serif; font-size:0.93rem;
+  outline:none; transition:border 0.2s, box-shadow 0.2s;
+  background:#fafbff;
+}
+.login-field input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(13,45,94,0.08); }
+.login-btn {
+  width:100%; padding:13px; margin-top:0.5rem;
+  background:linear-gradient(135deg, var(--primary), var(--primary-light));
+  color:white; border:none; border-radius:12px;
+  font-family:'Cairo',sans-serif; font-size:1rem; font-weight:700;
+  cursor:pointer; transition:transform 0.15s, box-shadow 0.2s;
+  box-shadow:0 4px 16px rgba(13,45,94,0.35);
+}
+.login-btn:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(13,45,94,0.4); }
+.login-err { color:var(--danger); font-size:0.82rem; text-align:center; margin-top:0.8rem; display:none; }
+.login-hint { text-align:center; font-size:0.72rem; color:#aab; margin-top:1.2rem; }
+
+/* ═══ SIDEBAR ═══ */
+#sidebar {
+  width:var(--sidebar-w); min-height:100vh;
+  background:linear-gradient(180deg, var(--primary) 0%, #0a2244 100%);
+  position:fixed; right:0; top:0; bottom:0; z-index:100;
+  display:flex; flex-direction:column;
+  box-shadow:-4px 0 24px rgba(0,0,0,0.2);
+}
+.sb-brand {
+  padding:1.6rem 1.4rem 1.2rem;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  display:flex; align-items:center; gap:12px;
+}
+.sb-logo {
+  width:48px; height:48px; border-radius:13px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-light));
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; color:var(--primary); font-weight:900; flex-shrink:0;
+  box-shadow:0 4px 12px rgba(200,149,42,0.4);
+}
+.sb-name { color:white; font-size:0.9rem; font-weight:700; line-height:1.4; }
+.sb-role { color:rgba(255,255,255,0.45); font-size:0.68rem; }
+
+.sb-nav { flex:1; padding:1rem 0; overflow-y:auto; }
+.sb-section { color:rgba(255,255,255,0.3); font-size:0.62rem; font-weight:700; letter-spacing:.1em; padding:.8rem 1.4rem .25rem; text-transform:uppercase; }
+.sb-item {
+  display:flex; align-items:center; gap:10px;
+  padding:.65rem 1.4rem; color:rgba(255,255,255,0.65);
+  cursor:pointer; font-size:0.86rem; font-weight:600;
+  border:none; background:none; width:100%; text-align:right;
+  transition:background .2s, color .2s, padding-right .2s;
+  border-right:3px solid transparent;
+}
+.sb-item:hover { background:rgba(255,255,255,0.06); color:white; padding-right:1.65rem; }
+.sb-item.active { background:rgba(200,149,42,0.14); color:var(--accent-light); border-right-color:var(--accent); }
+.sb-item .sbi { width:30px; height:30px; border-radius:8px; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-size:.95rem; flex-shrink:0; transition:background .2s; }
+.sb-item.active .sbi, .sb-item:hover .sbi { background:rgba(200,149,42,0.18); }
+
+.sb-footer { padding:1rem 1.4rem 1.4rem; border-top:1px solid rgba(255,255,255,0.08); }
+.sb-preview {
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  padding:9px; border-radius:9px; background:rgba(255,255,255,0.07);
+  color:rgba(255,255,255,0.65); font-size:0.8rem; font-weight:600;
+  text-decoration:none; margin-bottom:.7rem; transition:background .2s;
+}
+.sb-preview:hover { background:rgba(255,255,255,0.12); color:white; }
+.sb-logout {
+  width:100%; padding:9px; background:rgba(220,38,38,0.15);
+  border:1px solid rgba(220,38,38,0.25); border-radius:9px;
+  font-family:'Cairo',sans-serif; font-size:0.82rem; font-weight:700;
+  color:#fca5a5; cursor:pointer; transition:background .2s;
+}
+.sb-logout:hover { background:rgba(220,38,38,0.28); }
+
+/* ═══ MAIN ═══ */
+#main {
+  margin-right:var(--sidebar-w); flex:1; min-height:100vh;
+  display:flex; flex-direction:column;
+}
+.topbar {
+  background:white; padding:0 2rem; height:64px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(13,45,94,0.07);
+  box-shadow:0 2px 12px rgba(13,45,94,0.05);
+  position:sticky; top:0; z-index:50;
+}
+.topbar-left { display:flex; align-items:center; gap:12px; }
+.topbar-title { font-size:1rem; font-weight:700; color:var(--primary); }
+.topbar-badge { background:rgba(13,45,94,0.07); color:var(--primary-mid); font-size:0.72rem; font-weight:700; padding:4px 10px; border-radius:20px; }
+.topbar-admin { display:flex; align-items:center; gap:8px; font-size:0.82rem; color:var(--text-muted); }
+.topbar-admin strong { color:var(--primary); }
+
+/* ═══ CONTENT ═══ */
+.content { flex:1; padding:2rem; max-width:1200px; margin:0 auto; width:100%; }
+.panel { display:none; }
+.panel.active { display:block; animation:panelIn .3s ease; }
+@keyframes panelIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+
+.page-hd { margin-bottom:2rem; }
+.page-hd h1 { font-size:1.5rem; font-weight:900; color:var(--primary); display:flex; align-items:center; gap:10px; }
+.page-hd p { color:var(--text-muted); font-size:0.87rem; margin-top:.3rem; }
+
+/* ═══ CARDS ═══ */
+.card {
+  background:white; border-radius:var(--radius); padding:1.6rem;
+  box-shadow:var(--shadow); margin-bottom:1.5rem;
+}
+.card-title {
+  font-size:0.95rem; font-weight:700; color:var(--primary);
+  margin-bottom:1.3rem; display:flex; align-items:center; gap:8px;
+  padding-bottom:.8rem; border-bottom:1px solid var(--border);
+}
+
+/* ═══ STATS ═══ */
+.stats-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+.stat-card {
+  background:white; border-radius:var(--radius); padding:1.4rem;
+  box-shadow:var(--shadow); text-align:center; position:relative; overflow:hidden;
+}
+.stat-card::after { content:''; position:absolute; top:0; right:0; left:0; height:3px; background:linear-gradient(90deg,var(--accent),var(--accent-light)); }
+.stat-card .sn { font-size:1.7rem; font-weight:900; color:var(--primary); }
+.stat-card .sl { font-size:0.72rem; color:var(--text-muted); margin-top:.2rem; }
+
+/* ═══ FORMS ═══ */
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.form-group { margin-bottom:1rem; }
+.form-group label { display:block; font-size:0.79rem; font-weight:700; color:var(--text-muted); margin-bottom:5px; }
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width:100%; padding:10px 12px; border:1.5px solid var(--border);
+  border-radius:9px; font-family:'Cairo',sans-serif; font-size:0.88rem;
+  outline:none; transition:border .2s, box-shadow .2s; background:white; color:var(--text);
+}
+.form-group input:focus,
+.form-group textarea:focus { border-color:var(--primary-mid); box-shadow:0 0 0 3px rgba(13,45,94,0.06); }
+.form-group textarea { resize:vertical; min-height:80px; }
+.form-group input[type="color"] { height:42px; padding:4px 6px; cursor:pointer; }
+.form-full { grid-column:1/-1; }
+
+/* ═══ BUTTONS ═══ */
+.btn { padding:10px 22px; border-radius:9px; font-family:'Cairo',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; border:none; transition:opacity .2s, transform .15s; display:inline-flex; align-items:center; gap:7px; }
+.btn:hover { opacity:.88; transform:translateY(-1px); }
+.btn-primary { background:var(--primary); color:white; }
+.btn-accent { background:linear-gradient(135deg,var(--accent),var(--accent-light)); color:var(--primary); }
+.btn-success { background:var(--success); color:white; }
+.btn-danger { background:var(--danger); color:white; }
+.btn-ghost { background:rgba(13,45,94,0.07); color:var(--primary); }
+.btn-sm { padding:7px 14px; font-size:0.8rem; }
+.btn-bar { display:flex; gap:.7rem; flex-wrap:wrap; margin-top:1.3rem; padding-top:1.1rem; border-top:1px solid var(--border); }
+
+/* ═══ GALLERY ADMIN ═══ */
+.gallery-admin-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:1rem; margin-bottom:1rem; }
+.gal-item {
+  border:1.5px solid var(--border); border-radius:10px; overflow:hidden;
+  aspect-ratio:4/3; position:relative; background:#f6f8fc;
+}
+.gal-item img { width:100%; height:100%; object-fit:cover; }
+.gal-item .gal-icon { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:2.2rem; }
+.gal-item .gal-actions {
+  position:absolute; inset:0; background:rgba(0,0,0,0.55);
+  display:none; align-items:center; justify-content:center;
+}
+.gal-item:hover .gal-actions { display:flex; }
+.gal-caption { font-size:.72rem; text-align:center; padding:4px 6px; background:white; color:var(--text-muted); border-top:1px solid var(--border); }
+
+/* ═══ FAQ ADMIN ═══ */
+.faq-admin-row { background:#f8fafd; border:1.5px solid var(--border); border-radius:10px; padding:1rem; margin-bottom:.8rem; }
+.faq-row-head { display:flex; gap:8px; align-items:flex-start; }
+.faq-row-actions { display:flex; gap:6px; margin-top:.7rem; }
+
+/* ═══ COLOR PRESETS ═══ */
+.color-presets { display:flex; gap:8px; flex-wrap:wrap; margin-top:.6rem; }
+.cp { width:36px; height:36px; border-radius:8px; cursor:pointer; border:2px solid transparent; transition:transform .15s, border .15s; }
+.cp:hover { transform:scale(1.18); border-color:var(--primary); }
+
+/* ═══ TOAST ═══ */
+#toast {
+  position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(100px);
+  padding:12px 24px; border-radius:12px; color:white; font-weight:700; font-size:.88rem;
+  z-index:900; transition:transform .35s; pointer-events:none;
+  box-shadow:0 8px 28px rgba(0,0,0,0.25); min-width:200px; text-align:center;
+}
+#toast.show { transform:translateX(-50%) translateY(0); }
+#toast.success { background:#059669; }
+#toast.error { background:#dc2626; }
+
+/* ═══ DASHBOARD QUICK ACTIONS ═══ */
+.quick-actions { display:flex; flex-wrap:wrap; gap:.8rem; }
+
+/* ═══ GUIDE LIST ═══ */
+.guide-list { display:grid; gap:.7rem; }
+.guide-item { display:flex; gap:12px; align-items:flex-start; font-size:.87rem; }
+.guide-icon { width:36px; height:36px; border-radius:9px; background:rgba(13,45,94,0.07); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+
+@media(max-width:768px){
+  #sidebar { width:100%; position:fixed; height:auto; bottom:auto; transform:translateX(100%); }
+  #sidebar.open { transform:translateX(0); }
+  #main { margin-right:0; }
+  .form-grid { grid-template-columns:1fr; }
+  .stats-row { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN OVERLAY ═══ -->
+<div id="loginOverlay">
+  <div class="login-card">
+    <div class="login-logo">🔐</div>
+    <h1>لوحة الإدارة</h1>
+    <p class="sub">مدرسة النور الابتدائية — دخول المشرفين</p>
+    <div class="login-field">
+      <label>اسم المستخدم</label>
+      <input type="text" id="loginUser" placeholder="admin" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>كلمة المرور</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">🔓 دخول إلى لوحة التحكم</button>
+    <p class="login-err" id="loginErr">❌ بيانات الدخول غير صحيحة</p>
+    <p class="login-hint">الحساب الافتراضي: admin / admin123</p>
+  </div>
+</div>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">🏫</div>
+    <div>
+      <div class="sb-name">لوحة الإدارة</div>
+      <div class="sb-role">مدرسة النور الابتدائية</div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-section">الرئيسية</div>
+    <button class="sb-item active" onclick="showPanel('pDashboard')"><span class="sbi">📊</span> لوحة التحكم</button>
+
+    <div class="sb-section">إدارة المحتوى</div>
+    <button class="sb-item" onclick="showPanel('pHero')"><span class="sbi">🏠</span> الصفحة الرئيسية</button>
+    <button class="sb-item" onclick="showPanel('pInfo')"><span class="sbi">ℹ️</span> معلومات المدرسة</button>
+    <button class="sb-item" onclick="showPanel('pAddress')"><span class="sbi">📍</span> العنوان والتواصل</button>
+    <button class="sb-item" onclick="showPanel('pGallery')"><span class="sbi">🖼️</span> معرض الصور</button>
+    <button class="sb-item" onclick="showPanel('pFaq')"><span class="sbi">❓</span> الأسئلة الشائعة</button>
+
+    <div class="sb-section">التخصيص</div>
+    <button class="sb-item" onclick="showPanel('pDesign')"><span class="sbi">🎨</span> الألوان والتصميم</button>
+
+    <div class="sb-section">الحساب</div>
+    <button class="sb-item" onclick="showPanel('pSettings')"><span class="sbi">⚙️</span> الإعدادات والأمان</button>
+  </nav>
+
+  <div class="sb-footer">
+    <a href="index.html" target="_blank" class="sb-preview">👁️ معاينة الموقع</a>
+    <button class="sb-logout" onclick="doLogout()">🚪 تسجيل الخروج</button>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<div id="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-title" id="topbarTitle">لوحة التحكم</span>
+      <span class="topbar-badge" id="topbarBadge">الرئيسية</span>
+    </div>
+    <div class="topbar-admin">
+      <span>مرحباً،</span>
+      <strong id="adminUsername">المدير</strong>
+      <span>👋</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="panel active" id="pDashboard">
+      <div class="page-hd">
+        <h1>📊 لوحة التحكم</h1>
+        <p>نظرة عامة على حالة الموقع المدرسي</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="sn" id="dSchoolName" style="font-size:1rem">—</div><div class="sl">اسم المدرسة</div></div>
+        <div class="stat-card"><div class="sn" id="dStudents">—</div><div class="sl">عدد الطلاب</div></div>
+        <div class="stat-card"><div class="sn" id="dTeachers">—</div><div class="sl">عدد المعلمين</div></div>
+        <div class="stat-card"><div class="sn" id="dGallery">—</div><div class="sl">صور المعرض</div></div>
+        <div class="stat-card"><div class="sn" id="dFaqs">—</div><div class="sl">أسئلة شائعة</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">⚡ إجراءات سريعة</div>
+        <div class="quick-actions">
+          <button class="btn btn-primary" onclick="showPanel('pHero')">✏️ تعديل الصفحة الرئيسية</button>
+          <button class="btn btn-accent" onclick="showPanel('pGallery')">🖼️ إدارة الصور</button>
+          <button class="btn btn-ghost" onclick="showPanel('pFaq')">❓ إدارة الأسئلة</button>
+          <a href="index.html" target="_blank" class="btn btn-success" style="text-decoration:none">👁️ معاينة الموقع</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📖 دليل الاستخدام</div>
+        <div class="guide-list">
+          <div class="guide-item"><div class="guide-icon">🎯</div><span>من القائمة الجانبية، اختر القسم الذي تريد تعديله</span></div>
+          <div class="guide-item"><div class="guide-icon">💾</div><span>بعد التعديل، اضغط زر "حفظ" — تُحفظ البيانات في قاعدة البيانات مباشرة</span></div>
+          <div class="guide-item"><div class="guide-icon">👁️</div><span>اضغط "معاينة الموقع" أسفل القائمة لمشاهدة التعديلات فوراً</span></div>
+          <div class="guide-item"><div class="guide-icon">🔐</div><span>يمكنك تغيير كلمة المرور من قسم الإعدادات والأمان</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ HERO PANEL ═══ -->
+    <div class="panel" id="pHero">
+      <div class="page-hd"><h1>🏠 الصفحة الرئيسية</h1><p>تحكم في محتوى البانر والإحصائيات</p></div>
+      <div class="card">
+        <div class="card-title">🏫 اسم المدرسة</div>
+        <div class="form-group"><label>اسم المدرسة (يظهر في كل الصفحات)</label><input type="text" id="f_school_name" placeholder="مدرسة النور الابتدائية"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📝 نصوص البانر</div>
+        <div class="form-group"><label>العنوان الرئيسي</label><input type="text" id="f_hero_title" placeholder="مدرسة النور الابتدائية"></div>
+        <div class="form-group"><label>النص التوضيحي</label><textarea id="f_hero_subtitle" placeholder="نبني جيلاً متعلماً ومبدعاً..."></textarea></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📈 الأرقام والإحصائيات</div>
+        <div class="form-grid">
+          <div class="form-group"><label>👨‍🎓 عدد الطلاب</label><input type="number" id="f_stat_students" placeholder="800"></div>
+          <div class="form-group"><label>👩‍🏫 عدد المعلمين</label><input type="number" id="f_stat_teachers" placeholder="60"></div>
+          <div class="form-group"><label>📅 سنة التأسيس</label><input type="number" id="f_stat_year" placeholder="1995"></div>
+          <div class="form-group"><label>🏫 عدد الفصول</label><input type="number" id="f_stat_classes" placeholder="32"></div>
+        </div>
+      </div>
+      <div class="btn-bar">
+        <button class="btn btn-primary" onclick="saveSettings()">💾 حفظ التغييرات</button>
+      </div>
+    </div>
+
+    <!-- ═══ INFO PANEL ═══ -->
+    <div class="panel" id="pInfo">
+      <div class="page-hd"><h1>ℹ️ معلومات المدرسة</h1><p>تحديث البطاقات الإعلامية</p></div>
+      <div class="card">
+        <div class="card-title">📋 البيانات الأساسية</div>
+        <div class="form-grid">
+          <div class="form-group"><label>⏰ أوقات الدوام</label><input type="text" id="f_info_hours" placeholder="7:30 ص – 1:30 م"></div>
+          <div class="form-group"><label>📞 رقم الهاتف</label><input type="text" id="f_info_phone" placeholder="+966 11 234 5678"></div>
+          <div class="form-group"><label>📧 البريد الإلكتروني</label><input type="email" id="f_info_email"></div>
+          <div class="form-group"><label>👨‍💼 مدير المدرسة</label><input type="text" id="f_info_principal"></div>
+          <div class="form-group"><label>📖 المرحلة الدراسية</label><input type="text" id="f_info_level"></div>
+          <div class="form-group"><label>📍 الموقع / الحي</label><input type="text" id="f_info_location"></div>
+        </div>
+      </div>
+      <div class="btn-bar">
+        <button class="btn btn-primary" onclick="saveSettings()">💾 حفظ المعلومات</button>
+      </div>
+    </div>
+
+    <!-- ═══ ADDRESS PANEL ═══ -->
+    <div class="panel" id="pAddress">
+      <div class="page-hd"><h1>📍 العنوان ووسائل التواصل</h1><p>بيانات الموقع وقنوات التواصل</p></div>
+      <div class="card">
+        <div class="card-title">🏠 بيانات العنوان</div>
+        <div class="form-group"><label>الشارع والحي</label><input type="text" id="f_addr_street"></div>
+        <div class="form-grid">
+          <div class="form-group"><label>📮 الرمز البريدي</label><input type="text" id="f_addr_postal"></div>
+          <div class="form-group"><label>📞 هاتف العنوان</label><input type="text" id="f_addr_phone"></div>
+          <div class="form-group"><label>📠 الفاكس</label><input type="text" id="f_addr_fax"></div>
+          <div class="form-group"><label>🕐 ساعات الاستقبال</label><input type="text" id="f_addr_hours"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📲 وسائل التواصل</div>
+        <div class="form-grid">
+          <div class="form-group"><label>✉️ البريد الإلكتروني (Gmail)</label><input type="email" id="f_gmail_email" placeholder="school@gmail.com"></div>
+          <div class="form-group"><label>📱 رقم واتساب (مع رمز الدولة)</label><input type="text" id="f_whatsapp_num" placeholder="966512345678"></div>
+        </div>
+      </div>
+      <div class="btn-bar">
+        <button class="btn btn-primary" onclick="saveSettings()">💾 حفظ بيانات التواصل</button>
+      </div>
+    </div>
+
+    <!-- ═══ GALLERY PANEL ═══ -->
+    <div class="panel" id="pGallery">
+      <div class="page-hd"><h1>🖼️ معرض الصور</h1><p>إضافة وحذف صور المدرسة</p></div>
+      <div class="card">
+        <div class="card-title">➕ إضافة صورة جديدة</div>
+        <div class="form-grid">
+          <div class="form-group"><label>رابط الصورة (اختياري)</label><input type="text" id="gNewUrl" placeholder="https://..."></div>
+          <div class="form-group"><label>وصف الصورة</label><input type="text" id="gNewCaption" placeholder="مثال: مكتبة المدرسة"></div>
+          <div class="form-group"><label>رمز تعبيري (إذا لا يوجد رابط)</label><input type="text" id="gNewEmoji" placeholder="🏫"></div>
+        </div>
+        <button class="btn btn-accent" onclick="addGalleryItem()">➕ إضافة إلى المعرض</button>
+      </div>
+      <div class="card">
+        <div class="card-title">🗂️ الصور الحالية</div>
+        <div class="gallery-admin-grid" id="galleryAdminGrid">
+          <p style="color:var(--text-muted);font-size:.85rem">جاري التحميل...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ FAQ PANEL ═══ -->
+    <div class="panel" id="pFaq">
+      <div class="page-hd"><h1>❓ الأسئلة الشائعة</h1><p>تعديل وإضافة أسئلة المساعدة</p></div>
+      <div class="card">
+        <div class="card-title">📝 الأسئلة الحالية</div>
+        <div id="faqAdminList"></div>
+        <button class="btn btn-accent" onclick="addFaqItem()" style="margin-top:.5rem">➕ إضافة سؤال جديد</button>
+      </div>
+    </div>
+
+    <!-- ═══ DESIGN PANEL ═══ -->
+    <div class="panel" id="pDesign">
+      <div class="page-hd"><h1>🎨 الألوان والتصميم</h1><p>تخصيص مظهر الموقع</p></div>
+      <div class="card">
+        <div class="card-title">🌅 خلفية قسم البانر</div>
+        <div class="form-grid">
+          <div class="form-group"><label>لون بداية التدرج</label><input type="color" id="f_heroBgFrom" value="#0d2d5e"></div>
+          <div class="form-group"><label>لون نهاية التدرج</label><input type="color" id="f_heroBgTo" value="#3876c5"></div>
+        </div>
+        <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:8px">ألوان جاهزة للبانر:</p>
+        <div class="color-presets">
+          <div class="cp" style="background:linear-gradient(135deg,#0d2d5e,#3876c5)" title="أزرق كحلي" onclick="setHeroBg('#0d2d5e','#3876c5')"></div>
+          <div class="cp" style="background:linear-gradient(135deg,#065f46,#34d399)" title="أخضر" onclick="setHeroBg('#065f46','#34d399')"></div>
+          <div class="cp" style="background:linear-gradient(135deg,#7c3aed,#c084fc)" title="بنفسجي" onclick="setHeroBg('#7c3aed','#c084fc')"></div>
+          <div class="cp" style="background:linear-gradient(135deg,#9f1239,#fb7185)" title="أحمر" onclick="setHeroBg('#9f1239','#fb7185')"></div>
+          <div class="cp" style="background:linear-gradient(135deg,#92400e,#f59e0b)" title="ذهبي" onclick="setHeroBg('#92400e','#f59e0b')"></div>
+          <div class="cp" style="background:linear-gradient(135deg,#1e293b,#475569)" title="رمادي" onclick="setHeroBg('#1e293b','#475569')"></div>
+          <div class="cp" style="background:linear-gradient(135deg,#0c4a6e,#0ea5e9)" title="سماوي" onclick="setHeroBg('#0c4a6e','#0ea5e9')"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🖥️ لون خلفية الصفحة</div>
+        <div class="form-group"><input type="color" id="f_pageBg" value="#f0f4f9"></div>
+        <div class="color-presets">
+          <div class="cp" style="background:#f0f4f9;border:1px solid #ddd" onclick="document.getElementById('f_pageBg').value='#f0f4f9'"></div>
+          <div class="cp" style="background:#ffffff;border:1px solid #ddd" onclick="document.getElementById('f_pageBg').value='#ffffff'"></div>
+          <div class="cp" style="background:#f0fdf4" onclick="document.getElementById('f_pageBg').value='#f0fdf4'"></div>
+          <div class="cp" style="background:#fef9ee" onclick="document.getElementById('f_pageBg').value='#fef9ee'"></div>
+          <div class="cp" style="background:#f0f4ff" onclick="document.getElementById('f_pageBg').value='#f0f4ff'"></div>
+        </div>
+      </div>
+      <div class="btn-bar">
+        <button class="btn btn-primary" onclick="saveDesign()">💾 حفظ التصميم</button>
+      </div>
+    </div>
+
+    <!-- ═══ SETTINGS PANEL ═══ -->
+    <div class="panel" id="pSettings">
+      <div class="page-hd"><h1>⚙️ الإعدادات والأمان</h1><p>إدارة حساب الإدارة</p></div>
+      <div class="card">
+        <div class="card-title">🔐 تغيير كلمة المرور</div>
+        <div class="form-group"><label>كلمة المرور الحالية</label><input type="password" id="oldPass"></div>
+        <div class="form-group"><label>كلمة المرور الجديدة</label><input type="password" id="newPass"></div>
+        <div class="form-group"><label>تأكيد كلمة المرور الجديدة</label><input type="password" id="confirmPass"></div>
+        <div class="btn-bar">
+          <button class="btn btn-primary" onclick="changePassword()">💾 حفظ كلمة المرور</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- TOAST -->
+<div id="toast">✅ تم الحفظ</div>
+
+<script src="js/supabase.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

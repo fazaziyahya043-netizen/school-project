@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مدرسة النور الابتدائية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #0d2d5e;
+    --primary-mid: #1a4f8a;
+    --primary-light: #2e6db8;
+    --accent: #c8952a;
+    --accent-light: #f0c060;
+    --bg: #f4f6fb;
+    --white: #ffffff;
+    --text: #0f1d35;
+    --text-muted: #5a6a85;
+    --card-shadow: 0 4px 24px rgba(13,45,94,0.10);
+    --radius: 16px;
+    --sidebar-w: 270px;
+    --topbar-h: 64px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    direction: rtl;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* Toast notification */
+  #updateToast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #10b981;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    font-size: 0.9rem;
+  }
+  #updateToast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Refresh button */
+  .refresh-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .refresh-btn:hover {
+    background: var(--primary-light);
+    transform: scale(1.02);
+  }
+
+  /* Live indicator */
+  .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    background: rgba(0,0,0,0.05);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  #sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--primary) 0%, #0a2347 100%);
+    position: fixed;
+    right: 0; top: 0; bottom: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 30px rgba(0,0,0,0.18);
+    transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+  }
+
+  .sidebar-header {
+    padding: 1.8rem 1.4rem 1.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .sidebar-logo {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; font-weight: 900; color: var(--primary);
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(200,149,42,0.4);
+  }
+  .sidebar-title { color: white; font-size: 0.95rem; font-weight: 700; line-height: 1.4; }
+  .sidebar-subtitle { color: rgba(255,255,255,0.5); font-size: 0.72rem; margin-top: 2px; }
+
+  .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+  .nav-group-label {
+    color: rgba(255,255,255,0.35);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.9rem 1.4rem 0.3rem;
+    text-transform: uppercase;
+  }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.7rem 1.4rem;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s, padding-right 0.2s;
+    cursor: pointer;
+    border-right: 3px solid transparent;
+    position: relative;
+  }
+  .nav-link:hover {
+    background: rgba(255,255,255,0.06);
+    color: white;
+    padding-right: 1.7rem;
+  }
+  .nav-link.active {
+    background: rgba(200,149,42,0.15);
+    color: var(--accent-light);
+    border-right-color: var(--accent);
+  }
+  .nav-link .ni {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .nav-link:hover .ni, .nav-link.active .ni {
+    background: rgba(200,149,42,0.2);
+  }
+
+  .sidebar-footer {
+    padding: 1rem 1.4rem 1.4rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .sidebar-footer p { color: rgba(255,255,255,0.35); font-size: 0.7rem; text-align: center; }
+
+  #main-wrapper {
+    margin-right: var(--sidebar-w);
+    flex: 1;
+    min-width: 0;
+  }
+
+  #topbar {
+    position: sticky; top: 0; z-index: 100;
+    height: var(--topbar-h);
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(13,45,94,0.08);
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    box-shadow: 0 2px 12px rgba(13,45,94,0.06);
+  }
+  .topbar-title { font-size: 1rem; font-weight: 700; color: var(--primary); }
+  .topbar-actions { display: flex; gap: 0.8rem; align-items: center; }
+  .topbar-contact-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .topbar-contact-btn:hover { background: var(--primary-light); transform: translateY(-1px); }
+  #menuToggle {
+    display: none;
+    background: none; border: none; cursor: pointer;
+    font-size: 1.5rem; color: var(--primary);
+  }
+
+  .page-section {
+    display: none;
+    padding: 2.5rem 2rem;
+    max-width: 1050px;
+    margin: 0 auto;
+    animation: fadeIn 0.35s ease;
+  }
+  .page-section.active { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+  .section-head { margin-bottom: 2.2rem; }
+  .section-head h2 {
+    font-size: 1.6rem; font-weight: 900; color: var(--primary);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-head p { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.3rem; }
+  .section-divider {
+    width: 50px; height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-light));
+    border-radius: 2px; margin: 0.6rem 0 0;
+  }
+
+  #sec-home {
+    padding: 0;
+    max-width: 100%;
+  }
+  #sec-home.active { display: block; }
+
+  .hero-banner {
+    min-height: calc(100vh - var(--topbar-h));
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-mid) 55%, #3876c5 100%);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; text-align: center;
+    padding: 4rem 2rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-banner::before {
+    content:''; position:absolute; inset:0;
+    background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M40 0l40 40-40 40L0 40z'/%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-banner::after {
+    content:''; position:absolute;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(200,149,42,0.12) 0%, transparent 70%);
+    bottom: -100px; left: -100px; pointer-events: none;
+  }
+  .hero-badge {
+    background: rgba(200,149,42,0.2);
+    border: 1px solid rgba(200,149,42,0.4);
+    color: var(--accent-light);
+    font-size: 0.82rem; padding: 6px 20px;
+    border-radius: 20px; margin-bottom: 1.8rem;
+    backdrop-filter: blur(4px);
+    position: relative; z-index: 1;
+  }
+  .hero-logo-wrap {
+    width: 120px; height: 120px; border-radius: 28px;
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.8rem;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    border: 4px solid rgba(200,149,42,0.5);
+    font-size: 2.8rem; font-weight: 900; color: var(--primary);
+    position: relative; z-index: 1;
+  }
+  .hero-banner h1 {
+    color: white; font-size: clamp(1.8rem,4vw,2.8rem);
+    font-weight: 900; line-height: 1.3; margin-bottom: 0.8rem;
+    position: relative; z-index: 1;
+  }
+  .hero-sub {
+    color: rgba(255,255,255,0.78); font-size: 1.05rem;
+    max-width: 520px; margin-bottom: 2.2rem;
+    position: relative; z-index: 1; line-height: 1.7;
+  }
+  .hero-btns {
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    position: relative; z-index: 1;
+  }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    color: var(--primary); font-family:'Cairo',sans-serif;
+    font-weight: 700; font-size: 0.95rem; padding: 12px 28px;
+    border: none; border-radius: 12px; cursor: pointer;
+    text-decoration: none; transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 6px 20px rgba(200,149,42,0.45);
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(200,149,42,0.55); }
+  .btn-glass {
+    background: rgba(255,255,255,0.1);
+    color: white; font-family:'Cairo',sans-serif;
+    font-weight: 600; font-size: 0.95rem; padding: 12px 28px;
+    border: 1.5px solid rgba(255,255,255,0.35); border-radius: 12px;
+    cursor: pointer; text-decoration: none;
+    transition: background 0.2s;
+    backdrop-filter: blur(4px);
+  }
+  .btn-glass:hover { background: rgba(255,255,255,0.18); }
+
+  .hero-stats {
+    display: flex; gap: 3rem; margin-top: 3.5rem;
+    flex-wrap: wrap; justify-content: center;
+    position: relative; z-index: 1;
+  }
+  .hero-stat { color: white; text-align: center; }
+  .hero-stat .num {
+    font-size: 2.2rem; font-weight: 900;
+    background: linear-gradient(135deg, var(--accent-light), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+  }
+  .hero-stat .lbl { font-size: 0.8rem; opacity: 0.75; margin-top: 2px; }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1.2rem;
+  }
+  .info-card {
+    background: white; border-radius: var(--radius);
+    padding: 1.6rem; box-shadow: var(--card-shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-top: 4px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+    overflow: hidden;
+  }
+  .info-card::before {
+    content: '';
+    position: absolute; top: 0; right: 0; left: 0; height: 4px;
+    background: linear-gradient(90deg, var(--primary-mid), var(--primary-light));
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .info-card:hover { transform: translateY(-5px); box-shadow: 0 12px 32px rgba(13,45,94,0.15); }
+  .info-card .icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: linear-gradient(135deg, #e8f0fc, #d0e2f7);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; margin-bottom: 1rem;
+  }
+  .info-card h3 { font-size: 0.92rem; font-weight: 700; color: var(--primary); margin-bottom: 0.4rem; }
+  .info-card p { font-size: 0.83rem; color: var(--text-muted); line-height: 1.7; }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.2rem;
+  }
+  .gallery-item {
+    border-radius: var(--radius); overflow: hidden;
+    position: relative; aspect-ratio: 4/3;
+    cursor: pointer; box-shadow: var(--card-shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .gallery-item:hover { transform: scale(1.04); box-shadow: 0 16px 40px rgba(13,45,94,0.2); }
+  .gallery-item img { width:100%; height:100%; object-fit:cover; }
+  .gallery-placeholder {
+    width:100%; height:100%;
+    background: linear-gradient(135deg, #d4e6f9, #b0ccf0);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+  }
+  .gallery-caption {
+    position: absolute; bottom: 0; right: 0; left: 0;
+    background: linear-gradient(transparent, rgba(10,30,70,0.85));
+    color: white; padding: 1.2rem 0.9rem 0.7rem;
+    font-size: 0.82rem; font-weight: 600;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .gallery-item:hover .gallery-caption { opacity: 1; }
+
+  .address-card {
+    background: linear-gradient(135deg, var(--primary) 0%, #0a2347 100%);
+    border-radius: var(--radius); padding: 2rem;
+    max-width: 680px;
+  }
+  .address-row {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 0.85rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .address-row:last-child { border-bottom: none; }
+  .aicon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+  }
+  .atext { font-size: 0.9rem; line-height: 1.6; color: rgba(255,255,255,0.88); }
+  .atext strong { color: white; font-weight: 700; }
+  .map-link {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 1.5rem; padding: 12px;
+    background: rgba(255,255,255,0.1); border: 1.5px dashed rgba(255,255,255,0.3);
+    border-radius: 12px; color: rgba(255,255,255,0.75);
+    font-size: 0.88rem; font-weight: 600; text-decoration: none;
+    transition: background 0.2s;
+  }
+  .map-link:hover { background: rgba(255,255,255,0.18); color: white; }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.4rem; max-width: 680px;
+  }
+  .contact-card {
+    background: white; border-radius: var(--radius);
+    padding: 2.2rem 1.5rem; text-align: center;
+    box-shadow: var(--card-shadow); text-decoration: none; color: inherit;
+    display: block; transition: transform 0.2s, box-shadow 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .contact-card::after {
+    content: '';
+    position: absolute; bottom: 0; right: 0; left: 0; height: 4px;
+  }
+  .contact-card.gmail::after { background: #EA4335; }
+  .contact-card.whatsapp::after { background: #25D366; }
+  .contact-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(13,45,94,0.15); }
+  .contact-card .c-icon {
+    width: 70px; height: 70px; border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem; margin: 0 auto 1.2rem;
+  }
+  .contact-card.gmail .c-icon { background: #fef1f1; }
+  .contact-card.whatsapp .c-icon { background: #f0faf4; }
+  .contact-card h3 { font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 0.4rem; }
+  .contact-card p { font-size: 0.83rem; color: var(--text-muted); }
+  .contact-card .c-tag { font-size: 0.78rem; font-weight: 700; margin-top: 0.6rem; }
+  .contact-card.gmail .c-tag { color: #EA4335; }
+  .contact-card.whatsapp .c-tag { color: #25D366; }
+
+  .faq-list { max-width: 760px; }
+  .faq-item {
+    background: white; border-radius: 12px;
+    margin-bottom: 0.9rem; overflow: hidden;
+    box-shadow: 0 2px 12px rgba(13,45,94,0.06);
+    transition: box-shadow 0.2s;
+  }
+  .faq-item:hover { box-shadow: 0 6px 20px rgba(13,45,94,0.1); }
+  .faq-q {
+    padding: 1.1rem 1.4rem; font-weight: 700;
+    cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    background: white; font-size: 0.92rem; color: var(--text);
+    transition: background 0.2s;
+    user-select: none;
+  }
+  .faq-q:hover { background: #f5f8ff; }
+  .faq-item.open .faq-q { background: #eef4ff; color: var(--primary); }
+  .faq-arrow {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(13,45,94,0.08); display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; color: var(--primary-mid); flex-shrink: 0;
+    transition: transform 0.35s, background 0.2s;
+  }
+  .faq-item.open .faq-arrow { transform: rotate(180deg); background: var(--primary-mid); color: white; }
+  .faq-a {
+    padding: 0 1.4rem; max-height: 0; overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(.4,0,.2,1), padding 0.3s;
+    font-size: 0.87rem; color: var(--text-muted); line-height: 1.9;
+  }
+  .faq-item.open .faq-a { max-height: 400px; padding: 0.8rem 1.4rem 1.3rem; }
+
+  .device-card {
+    background: white; border-radius: var(--radius); padding: 2rem;
+    box-shadow: var(--card-shadow); max-width: 680px;
+  }
+  .device-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.85rem 0; border-bottom: 1px solid #eef2f9; font-size: 0.88rem;
+  }
+  .device-row:last-child { border-bottom: none; }
+  .device-label { color: var(--text-muted); font-weight: 600; display: flex; gap: 8px; align-items: center; }
+  .device-value { color: var(--primary); font-weight: 700; text-align: left; max-width: 55%; word-break: break-all; }
+
+  #floatHelp {
+    position: fixed; bottom: 2rem; left: 2rem; z-index: 300;
+    width: 58px; height: 58px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    color: var(--primary); border: none; font-size: 1.6rem;
+    cursor: pointer; box-shadow: 0 6px 24px rgba(200,149,42,0.5);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s;
+  }
+  #floatHelp:hover { transform: scale(1.1) rotate(-8deg); }
+
+  #helpModal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(13,29,53,0.65); backdrop-filter: blur(4px);
+    z-index: 500; align-items: center; justify-content: center; padding: 1rem;
+  }
+  #helpModal.show { display: flex; }
+  .modal-box {
+    background: white; border-radius: 24px; padding: 2.2rem;
+    max-width: 420px; width: 100%;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.3); text-align: center;
+    animation: modalIn 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes modalIn { from { opacity:0; transform:scale(0.92) translateY(20px); } to { opacity:1; transform:none; } }
+  .modal-icon { font-size: 2.8rem; margin-bottom: 0.8rem; }
+  .modal-box h2 { color: var(--primary); font-size: 1.25rem; font-weight: 900; margin-bottom: 0.4rem; }
+  .modal-box p { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.8rem; }
+  .modal-actions { display: flex; flex-direction: column; gap: 0.8rem; }
+  .modal-btn {
+    padding: 13px; border-radius: 12px; font-family: 'Cairo', sans-serif;
+    font-size: 0.92rem; font-weight: 700; cursor: pointer;
+    text-decoration: none; border: none;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .modal-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .modal-close { background: #f0f4fa; color: var(--text-muted); }
+
+  #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 150; }
+
+  @media (max-width: 768px) {
+    #sidebar {
+      transform: translateX(100%);
+    }
+    #sidebar.open {
+      transform: translateX(0);
+    }
+    #overlay.show { display: block; }
+    #main-wrapper { margin-right: 0; }
+    #menuToggle { display: flex; }
+    .hero-stats { gap: 1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Toast notification -->
+<div id="updateToast">🔄 تم تحديث المحتوى!</div>
+
+<!-- OVERLAY for mobile -->
+<div id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo" id="sbLogo">ن</div>
+    <div>
+      <div class="sidebar-title" id="sbName">مدرسة النور الابتدائية</div>
+      <div class="sidebar-subtitle">البوابة الإلكترونية</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">التنقل</div>
+    <a class="nav-link active" onclick="showSection('sec-home')">
+      <span class="ni">🏠</span> الرئيسية
+    </a>
+
+    <div class="nav-group-label">معلومات المدرسة</div>
+    <a class="nav-link" onclick="showSection('sec-info')">
+      <span class="ni">ℹ️</span> عن المدرسة
+    </a>
+    <a class="nav-link" onclick="showSection('sec-gallery')">
+      <span class="ni">🖼️</span> الصور المدرسية
+    </a>
+    <a class="nav-link" onclick="showSection('sec-address')">
+      <span class="ni">📍</span> الموقع والعنوان
+    </a>
+
+    <div class="nav-group-label">التواصل والمساعدة</div>
+    <a class="nav-link" onclick="showSection('sec-contact')">
+      <span class="ni">📞</span> تواصل معنا
+    </a>
+    <a class="nav-link" onclick="showSection('sec-faq')">
+      <span class="ni">❓</span> الأسئلة الشائعة
+    </a>
+
+    <div class="nav-group-label">معلومات أخرى</div>
+    <a class="nav-link" onclick="showSection('sec-device')">
+      <span class="ni">💻</span> معلومات جهازك
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <p>© 2025 مدرسة النور الابتدائية</p>
+  </div>
+</aside>
+
+<!-- ═══ MAIN WRAPPER ═══ -->
+<div id="main-wrapper">
+
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button id="menuToggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-title" id="topbarTitle">الرئيسية</span>
+    </div>
+    <div class="topbar-actions">
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        <span>مباشر</span>
+      </div>
+      <button class="refresh-btn" onclick="manualRefresh()">
+        🔄 تحديث الآن
+      </button>
+      <button class="topbar-contact-btn" onclick="document.getElementById('helpModal').classList.add('show')">
+        💬 تواصل معنا
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════ SECTION: HOME ═══════ -->
+  <section class="page-section active" id="sec-home" style="padding:0;max-width:100%">
+    <div class="hero-banner" id="heroBanner">
+      <div class="hero-badge">🎓 مرحباً بكم في مدرستنا</div>
+      <div class="hero-logo-wrap" id="heroLogoWrap">
+        <span id="heroLogoText">ن</span>
+      </div>
+      <h1 id="heroTitle">مدرسة النور الابتدائية</h1>
+      <p class="hero-sub" id="heroSubtitle">نبني جيلاً متعلماً ومبدعاً — تعليم راقٍ في بيئة آمنة ومحفزة</p>
+      <div class="hero-btns">
+        <a href="#" onclick="showSection('sec-info')" class="btn-gold">اكتشف أكثر</a>
+        <a href="#" onclick="showSection('sec-contact')" class="btn-glass">تواصل معنا</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="num" id="statStudents">1250</span><span class="lbl">طالب وطالبة</span></div>
+        <div class="hero-stat"><span class="num" id="statTeachers">85</span><span class="lbl">معلم ومعلمة</span></div>
+        <div class="hero-stat"><span class="num" id="statYear">1995</span><span class="lbl">سنة التأسيس</span></div>
+        <div class="hero-stat"><span class="num" id="statClasses">36</span><span class="lbl">فصل دراسي</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: INFO ═══════ -->
+  <section class="page-section" id="sec-info">
+    <div class="section-head">
+      <h2>ℹ️ معلومات عن المدرسة</h2>
+      <p>كل ما تحتاج معرفته عن مدرستنا</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="icon">🕐</div>
+        <h3>الدوام الرسمي</h3>
+        <p id="infoHours">من 7:30 صباحاً حتى 1:30 ظهراً — أيام الأحد إلى الخميس</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">📞</div>
+        <h3>الهاتف</h3>
+        <p id="infoPhone">+966 11 234 5678</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">📧</div>
+        <h3>البريد الإلكتروني</h3>
+        <p id="infoEmail">info@alnoor.edu.sa</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">👨‍💼</div>
+        <h3>مدير المدرسة</h3>
+        <p id="infoPrincipal">الأستاذ / أحمد العلي</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">🏫</div>
+        <h3>المرحلة الدراسية</h3>
+        <p id="infoLevel">المرحلة الابتدائية — الصف الأول حتى السادس</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">📍</div>
+        <h3>الموقع</h3>
+        <p id="infoLocation">حي النور، الرياض، المملكة العربية السعودية</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: GALLERY ═══════ -->
+  <section class="page-section" id="sec-gallery">
+    <div class="section-head">
+      <h2>🖼️ الصور المدرسية</h2>
+      <p>لقطات من حياتنا المدرسية</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="gallery-grid" id="galleryGrid">
+      <div class="gallery-item"><div class="gallery-placeholder">🏫</div><div class="gallery-caption">جاري التحميل...</div></div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: ADDRESS ═══════ -->
+  <section class="page-section" id="sec-address">
+    <div class="section-head">
+      <h2>📍 الموقع والعنوان</h2>
+      <p>زورونا أو تواصلوا معنا</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="address-card">
+      <div class="address-row">
+        <div class="aicon">📍</div>
+        <div class="atext"><strong>العنوان:</strong><br><span id="addrStreet">شارع النور، حي النور، الرياض</span></div>
+      </div>
+      <div class="address-row">
+        <div class="aicon">📮</div>
+        <div class="atext"><strong>الرمز البريدي:</strong> <span id="addrPostal">11451</span></div>
+      </div>
+      <div class="address-row">
+        <div class="aicon">📞</div>
+        <div class="atext"><strong>الهاتف:</strong> <span id="addrPhone">+966 11 234 5678</span></div>
+      </div>
+      <div class="address-row">
+        <div class="aicon">📠</div>
+        <div class="atext"><strong>الفاكس:</strong> <span id="addrFax">+966 11 234 5679</span></div>
+      </div>
+      <div class="address-row">
+        <div class="aicon">🕐</div>
+        <div class="atext"><strong>ساعات الدوام:</strong> <span id="addrHours">الأحد – الخميس: 7:30 ص – 1:30 م</span></div>
+      </div>
+      <a href="https://maps.google.com" target="_blank" class="map-link">
+        🗺️ فتح الموقع في خرائط Google
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: CONTACT ═══════ -->
+  <section class="page-section" id="sec-contact">
+    <div class="section-head">
+      <h2>📞 تواصل معنا</h2>
+      <p>اختر الطريقة التي تناسبك</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="contact-grid">
+      <a href="mailto:info@alnoor.edu.sa" class="contact-card gmail" id="gmailCard">
+        <div class="c-icon">📧</div>
+        <h3>البريد الإلكتروني</h3>
+        <p id="gmailText">info@alnoor.edu.sa</p>
+        <p class="c-tag">Gmail ✉️</p>
+      </a>
+      <a href="https://wa.me/966512345678" target="_blank" class="contact-card whatsapp" id="whatsappCard">
+        <div class="c-icon">📱</div>
+        <h3>واتساب</h3>
+        <p id="whatsappText">+966 51 234 5678</p>
+        <p class="c-tag">WhatsApp 💬</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: FAQ ═══════ -->
+  <section class="page-section" id="sec-faq">
+    <div class="section-head">
+      <h2>❓ الأسئلة الشائعة</h2>
+      <p>إجابات على أبرز الأسئلة</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="faq-list" id="faqList">
+      <div class="faq-item"><div class="faq-q">جاري التحميل... <span class="faq-arrow">▾</span></div><div class="faq-a"></div></div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: DEVICE ═══════ -->
+  <section class="page-section" id="sec-device">
+    <div class="section-head">
+      <h2>💻 معلومات جهازك</h2>
+      <p>بيانات تلقائية من متصفحك</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="device-card">
+      <div class="device-row"><span class="device-label">🌐 المتصفح</span><span class="device-value" id="devBrowser">—</span></div>
+      <div class="device-row"><span class="device-label">💻 نظام التشغيل</span><span class="device-value" id="devOS">—</span></div>
+      <div class="device-row"><span class="device-label">📱 نوع الجهاز</span><span class="device-value" id="devType">—</span></div>
+      <div class="device-row"><span class="device-label">🖥️ الدقة</span><span class="device-value" id="devResolution">—</span></div>
+      <div class="device-row"><span class="device-label">🌍 اللغة</span><span class="device-value" id="devLang">—</span></div>
+      <div class="device-row"><span class="device-label">⏰ المنطقة الزمنية</span><span class="device-value" id="devTZ">—</span></div>
+      <div class="device-row"><span class="device-label">📅 التاريخ والوقت</span><span class="device-value" id="devDateTime">—</span></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- FLOATING HELP -->
+<button id="floatHelp" onclick="document.getElementById('helpModal').classList.add('show')" title="مساعدة">💬</button>
+
+<!-- HELP MODAL -->
+<div id="helpModal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal-box">
+    <div class="modal-icon">💬</div>
+    <h2>كيف نساعدك؟</h2>
+    <p>اختر طريقة التواصل المناسبة لك</p>
+    <div class="modal-actions">
+      <a class="modal-btn" id="modalGmail" href="mailto:info@alnoor.edu.sa" style="background:#EA4335;color:white">📧 مراسلة عبر البريد الإلكتروني</a>
+      <a class="modal-btn" id="modalWhatsApp" href="https://wa.me/966512345678" target="_blank" style="background:#25D366;color:white">📱 التواصل عبر واتساب</a>
+      <a class="modal-btn" href="#" style="background:#eef4ff;color:var(--primary)" onclick="document.getElementById('helpModal').classList.remove('show');showSection('sec-faq')">📖 عرض الأسئلة الشائعة</a>
+      <button class="modal-btn modal-close" onclick="document.getElementById('helpModal').classList.remove('show')">✕ إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/supabase.js"></script>
+<script src="js/main.js"></script>
+<script>
+// ─── SECTION NAVIGATION ───
+const sectionTitles = {
+  'sec-home': 'الرئيسية',
+  'sec-info': 'عن المدرسة',
+  'sec-gallery': 'الصور المدرسية',
+  'sec-address': 'الموقع والعنوان',
+  'sec-contact': 'تواصل معنا',
+  'sec-faq': 'الأسئلة الشائعة',
+  'sec-device': 'معلومات جهازك'
+};
+
+function showSection(id) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const section = document.getElementById(id);
+  if (section) section.classList.add('active');
+  const link = document.querySelector(`[onclick="showSection('${id}')"]`);
+  if (link) link.classList.add('active');
+  const titleEl = document.getElementById('topbarTitle');
+  if (titleEl) titleEl.textContent = sectionTitles[id] || '';
+  closeSidebar();
+  window.scrollTo(0, 0);
+}
+
+// ─── SIDEBAR MOBILE ───
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ─── FAQ ACCORDION ───
+function initFaqAccordion() {
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q');
+    if (q && !q.hasListener) {
+      q.hasListener = true;
+      q.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const wasOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!wasOpen) item.classList.add('open');
+      });
+    }
+  });
+}
+</script>
+</body>
+</html>
