@@ -231,3 +231,37 @@ body {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
 }
+
+/* تقييمات النجوم */
+.rating-input i:hover,
+.rating-input i.hover {
+  color: var(--accent);
+}
+.review-item {
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 0;
+}
+.review-item:last-child { border-bottom: none; }
+.review-name {
+  font-weight: 700;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.review-stars {
+  color: var(--accent);
+  font-size: 0.85rem;
+  direction: ltr;
+  display: inline-block;
+}
+.review-comment {
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  line-height: 1.6;
+}
+.review-date {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}

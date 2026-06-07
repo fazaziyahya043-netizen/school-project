@@ -2,491 +2,749 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>لوحة الإدارة — مدرسة النور</title>
+ 
+<!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<!-- Bootstrap 5 RTL + Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+ 
 <style>
+/* ═══════════════════════════════════════════
+   المتغيرات والأساسيات - نسخة متجاوبة
+═══════════════════════════════════════════ */
 :root {
-  --primary: #0d2d5e;
+  --primary:     #0d2d5e;
   --primary-mid: #1a4f8a;
-  --primary-light: #2e6db8;
-  --accent: #c8952a;
-  --accent-light: #f0c060;
-  --success: #059669;
-  --danger: #dc2626;
-  --warning: #d97706;
-  --bg: #f0f4f9;
-  --sidebar-w: 260px;
-  --white: #fff;
-  --text: #0f1d35;
-  --text-muted: #5a6a85;
-  --border: #e2e8f0;
-  --radius: 14px;
-  --shadow: 0 2px 16px rgba(13,45,94,0.08);
-  --shadow-lg: 0 8px 32px rgba(13,45,94,0.14);
+  --primary-light:#2e6db8;
+  --accent:      #c8952a;
+  --accent-light:#f0c060;
+  --success:     #059669;
+  --danger:      #dc2626;
+  --warning:     #d97706;
+  --bg:          #f0f4f9;
+  --white:       #fff;
+  --text:        #0f1d35;
+  --text-muted:  #5a6a85;
+  --border:      #e2e8f0;
+  --radius:      14px;
+  --shadow:      0 2px 16px rgba(13,45,94,.08);
+  --shadow-lg:   0 8px 32px rgba(13,45,94,.14);
 }
+ 
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Cairo',sans-serif; background:var(--bg); color:var(--text); direction:rtl; display:flex; min-height:100vh; }
-
-/* ═══ LOGIN ═══ */
+ 
+body {
+  font-family: 'Cairo', Tahoma, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  direction: rtl;
+  min-height: 100vh;
+  font-size: 1rem;
+}
+ 
+/* ═══════════════════════════════════════════
+   LOGIN OVERLAY - متجاوب
+═══════════════════════════════════════════ */
 #loginOverlay {
-  position:fixed; inset:0; z-index:999;
+  position: fixed; inset: 0; z-index: 2000;
   background: linear-gradient(135deg, var(--primary) 0%, #0a2244 50%, #1a3d7a 100%);
-  display:flex; align-items:center; justify-content:center;
-  padding:1rem;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
 }
 #loginOverlay::before {
   content:''; position:absolute; inset:0;
-  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M30 0l30 30-30 30L0 30z'/%3E%3C/g%3E%3C/svg%3E");
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M30 0l30 30-30 30L0 30z'/%3E%3C/g%3E%3C/svg%3E");
 }
 .login-card {
-  background:white; border-radius:24px; padding:3rem 2.5rem;
-  width:100%; max-width:420px; position:relative;
-  box-shadow:0 32px 80px rgba(0,0,0,0.4);
+  background: white; border-radius: 22px; padding: 2rem 1.5rem;
+  width: 100%; max-width: 400px; position: relative;
+  box-shadow: 0 32px 80px rgba(0,0,0,.4);
+}
+@media (min-width: 576px) {
+  .login-card { padding: 2.8rem 2.2rem; }
 }
 .login-logo {
-  width:80px; height:80px; border-radius:20px;
-  background:linear-gradient(135deg,var(--accent),var(--accent-light));
-  display:flex; align-items:center; justify-content:center;
-  font-size:2rem; margin:0 auto 1.5rem; color:var(--primary);
-  box-shadow:0 8px 24px rgba(200,149,42,0.4);
+  width: 70px; height: 70px; border-radius: 18px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; margin: 0 auto 1.2rem; color: var(--primary);
+  box-shadow: 0 8px 24px rgba(200,149,42,.4);
 }
-.login-card h1 { text-align:center; font-size:1.4rem; font-weight:900; color:var(--primary); margin-bottom:0.3rem; }
-.login-card .sub { text-align:center; color:var(--text-muted); font-size:0.85rem; margin-bottom:2rem; }
-.login-field { margin-bottom:1.1rem; }
-.login-field label { font-size:0.8rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px; }
+@media (min-width: 576px) {
+  .login-logo { width: 76px; height: 76px; font-size: 1.9rem; margin: 0 auto 1.4rem; }
+}
+.login-card h1 { text-align: center; font-size: 1.2rem; font-weight: 900; color: var(--primary); margin-bottom: .25rem; }
+@media (min-width: 576px) {
+  .login-card h1 { font-size: 1.35rem; }
+}
+.login-card .sub { text-align: center; color: var(--text-muted); font-size: .75rem; margin-bottom: 1.5rem; }
+@media (min-width: 576px) {
+  .login-card .sub { font-size: .83rem; margin-bottom: 1.8rem; }
+}
+.login-field { margin-bottom: 0.9rem; }
+.login-field label { font-size: .75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 5px; }
 .login-field input {
-  width:100%; padding:12px 14px; border:1.5px solid var(--border);
-  border-radius:10px; font-family:'Cairo',sans-serif; font-size:0.93rem;
-  outline:none; transition:border 0.2s, box-shadow 0.2s;
-  background:#fafbff;
+  width: 100%; padding: 10px 12px; border: 1.5px solid var(--border);
+  border-radius: 9px; font-family: 'Cairo', sans-serif; font-size: .88rem;
+  outline: none; transition: border .2s, box-shadow .2s; background: #fafbff;
 }
-.login-field input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(13,45,94,0.08); }
+.login-field input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13,45,94,.08); }
 .login-btn {
-  width:100%; padding:13px; margin-top:0.5rem;
-  background:linear-gradient(135deg, var(--primary), var(--primary-light));
-  color:white; border:none; border-radius:12px;
-  font-family:'Cairo',sans-serif; font-size:1rem; font-weight:700;
-  cursor:pointer; transition:transform 0.15s, box-shadow 0.2s;
-  box-shadow:0 4px 16px rgba(13,45,94,0.35);
+  width: 100%; padding: 12px; margin-top: .5rem;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white; border: none; border-radius: 11px;
+  font-family: 'Cairo', sans-serif; font-size: .92rem; font-weight: 700;
+  cursor: pointer; transition: transform .15s, box-shadow .2s;
 }
-.login-btn:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(13,45,94,0.4); }
-.login-err { color:var(--danger); font-size:0.82rem; text-align:center; margin-top:0.8rem; display:none; }
-.login-hint { text-align:center; font-size:0.72rem; color:#aab; margin-top:1.2rem; }
-
-/* ═══ SIDEBAR ═══ */
+.login-btn:active { transform: scale(0.98); }
+.login-err  { color: var(--danger); font-size: .75rem; text-align: center; margin-top: .7rem; display: none; }
+.login-hint { text-align: center; font-size: .65rem; color: #aab; margin-top: 1rem; }
+ 
+/* ═══════════════════════════════════════════
+   SIDEBAR - متجاوب بالكامل
+═══════════════════════════════════════════ */
+#sidebarBackdrop {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.5); z-index: 1040;
+  backdrop-filter: blur(2px);
+}
+ 
 #sidebar {
-  width:var(--sidebar-w); min-height:100vh;
-  background:linear-gradient(180deg, var(--primary) 0%, #0a2244 100%);
-  position:fixed; right:0; top:0; bottom:0; z-index:100;
-  display:flex; flex-direction:column;
-  box-shadow:-4px 0 24px rgba(0,0,0,0.2);
+  width: 280px; min-height: 100vh;
+  background: linear-gradient(180deg, var(--primary) 0%, #0a2244 100%);
+  position: fixed; right: -280px; top: 0; bottom: 0; z-index: 1045;
+  display: flex; flex-direction: column;
+  box-shadow: -4px 0 24px rgba(0,0,0,.2);
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
 }
+#sidebar.open { right: 0; }
+ 
+@media (min-width: 992px) {
+  #sidebar { right: 0; width: 260px; }
+}
+ 
 .sb-brand {
-  padding:1.6rem 1.4rem 1.2rem;
-  border-bottom:1px solid rgba(255,255,255,0.08);
-  display:flex; align-items:center; gap:12px;
+  padding: 1.2rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+@media (min-width: 768px) {
+  .sb-brand { padding: 1.4rem 1.2rem; gap: 11px; }
 }
 .sb-logo {
-  width:48px; height:48px; border-radius:13px;
-  background:linear-gradient(135deg,var(--accent),var(--accent-light));
-  display:flex; align-items:center; justify-content:center;
-  font-size:1.3rem; color:var(--primary); font-weight:900; flex-shrink:0;
-  box-shadow:0 4px 12px rgba(200,149,42,0.4);
+  width: 40px; height: 40px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; color: var(--primary); font-weight: 900; flex-shrink: 0;
 }
-.sb-name { color:white; font-size:0.9rem; font-weight:700; line-height:1.4; }
-.sb-role { color:rgba(255,255,255,0.45); font-size:0.68rem; }
-
-.sb-nav { flex:1; padding:1rem 0; overflow-y:auto; }
-.sb-section { color:rgba(255,255,255,0.3); font-size:0.62rem; font-weight:700; letter-spacing:.1em; padding:.8rem 1.4rem .25rem; text-transform:uppercase; }
+@media (min-width: 768px) {
+  .sb-logo { width: 44px; height: 44px; font-size: 1.2rem; }
+}
+.sb-name { color: white; font-size: 0.85rem; font-weight: 700; line-height: 1.3; }
+@media (min-width: 768px) {
+  .sb-name { font-size: 0.88rem; }
+}
+.sb-role { color: rgba(255,255,255,.45); font-size: 0.65rem; }
+.sb-close-btn {
+  background: rgba(255,255,255,.1); border: none;
+  color: rgba(255,255,255,.7); width: 28px; height: 28px;
+  border-radius: 7px; font-size: 0.9rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  margin-right: auto; flex-shrink: 0;
+}
+@media (min-width: 992px) {
+  .sb-close-btn { display: none; }
+}
+ 
+.sb-nav { flex: 1; padding: 0.5rem 0; overflow-y: auto; }
+.sb-section { color: rgba(255,255,255,.3); font-size: 0.6rem; font-weight: 700; letter-spacing: .1em; padding: 0.7rem 1rem 0.2rem; text-transform: uppercase; }
 .sb-item {
-  display:flex; align-items:center; gap:10px;
-  padding:.65rem 1.4rem; color:rgba(255,255,255,0.65);
-  cursor:pointer; font-size:0.86rem; font-weight:600;
-  border:none; background:none; width:100%; text-align:right;
-  transition:background .2s, color .2s, padding-right .2s;
-  border-right:3px solid transparent;
+  display: flex; align-items: center; gap: 8px;
+  padding: 0.6rem 1rem; color: rgba(255,255,255,.65);
+  cursor: pointer; font-size: 0.82rem; font-weight: 600;
+  border: none; background: none; width: 100%; text-align: right;
+  transition: background .2s, color .2s;
+  border-right: 3px solid transparent;
+  font-family: 'Cairo', sans-serif;
 }
-.sb-item:hover { background:rgba(255,255,255,0.06); color:white; padding-right:1.65rem; }
-.sb-item.active { background:rgba(200,149,42,0.14); color:var(--accent-light); border-right-color:var(--accent); }
-.sb-item .sbi { width:30px; height:30px; border-radius:8px; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-size:.95rem; flex-shrink:0; transition:background .2s; }
-.sb-item.active .sbi, .sb-item:hover .sbi { background:rgba(200,149,42,0.18); }
-
-.sb-footer { padding:1rem 1.4rem 1.4rem; border-top:1px solid rgba(255,255,255,0.08); }
+@media (min-width: 768px) {
+  .sb-item { padding: 0.65rem 1.3rem; gap: 9px; font-size: 0.85rem; }
+}
+.sb-item:hover  { background: rgba(255,255,255,.06); color: white; }
+.sb-item.active { background: rgba(200,149,42,.14); color: var(--accent-light); border-right-color: var(--accent); }
+.sb-item .sbi {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: rgba(255,255,255,.07);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0;
+}
+@media (min-width: 768px) {
+  .sb-item .sbi { width: 28px; height: 28px; font-size: 0.9rem; }
+}
+ 
+.sb-footer {
+  padding: 0.8rem 1rem 1rem;
+  border-top: 1px solid rgba(255,255,255,.08);
+  flex-shrink: 0;
+}
+@media (min-width: 768px) {
+  .sb-footer { padding: 0.9rem 1.3rem 1.3rem; }
+}
 .sb-preview {
-  display:flex; align-items:center; justify-content:center; gap:8px;
-  padding:9px; border-radius:9px; background:rgba(255,255,255,0.07);
-  color:rgba(255,255,255,0.65); font-size:0.8rem; font-weight:600;
-  text-decoration:none; margin-bottom:.7rem; transition:background .2s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px; border-radius: 9px; background: rgba(255,255,255,.07);
+  color: rgba(255,255,255,.65); font-size: 0.75rem; font-weight: 600;
+  text-decoration: none; margin-bottom: 0.5rem; transition: background .2s;
 }
-.sb-preview:hover { background:rgba(255,255,255,0.12); color:white; }
 .sb-logout {
-  width:100%; padding:9px; background:rgba(220,38,38,0.15);
-  border:1px solid rgba(220,38,38,0.25); border-radius:9px;
-  font-family:'Cairo',sans-serif; font-size:0.82rem; font-weight:700;
-  color:#fca5a5; cursor:pointer; transition:background .2s;
+  width: 100%; padding: 8px; background: rgba(220,38,38,.15);
+  border: 1px solid rgba(220,38,38,.25); border-radius: 9px;
+  font-family: 'Cairo', sans-serif; font-size: 0.75rem; font-weight: 700;
+  color: #fca5a5; cursor: pointer; transition: background .2s;
 }
-.sb-logout:hover { background:rgba(220,38,38,0.28); }
-
-/* ═══ MAIN ═══ */
+ 
+/* ═══════════════════════════════════════════
+   MAIN AREA - متجاوب
+═══════════════════════════════════════════ */
 #main {
-  margin-right:var(--sidebar-w); flex:1; min-height:100vh;
-  display:flex; flex-direction:column;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: margin-right 0.3s ease;
 }
+@media (min-width: 992px) {
+  #main { margin-right: 260px; width: calc(100% - 260px); }
+}
+ 
 .topbar {
-  background:white; padding:0 2rem; height:64px;
-  display:flex; align-items:center; justify-content:space-between;
-  border-bottom:1px solid rgba(13,45,94,0.07);
-  box-shadow:0 2px 12px rgba(13,45,94,0.05);
-  position:sticky; top:0; z-index:50;
+  background: white; padding: 0 1rem; min-height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(13,45,94,.07);
+  box-shadow: 0 2px 12px rgba(13,45,94,.05);
+  position: sticky; top: 0; z-index: 100;
+  gap: 8px;
 }
-.topbar-left { display:flex; align-items:center; gap:12px; }
-.topbar-title { font-size:1rem; font-weight:700; color:var(--primary); }
-.topbar-badge { background:rgba(13,45,94,0.07); color:var(--primary-mid); font-size:0.72rem; font-weight:700; padding:4px 10px; border-radius:20px; }
-.topbar-admin { display:flex; align-items:center; gap:8px; font-size:0.82rem; color:var(--text-muted); }
-.topbar-admin strong { color:var(--primary); }
-
-/* ═══ CONTENT ═══ */
-.content { flex:1; padding:2rem; max-width:1200px; margin:0 auto; width:100%; }
-.panel { display:none; }
-.panel.active { display:block; animation:panelIn .3s ease; }
-@keyframes panelIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
-
-.page-hd { margin-bottom:2rem; }
-.page-hd h1 { font-size:1.5rem; font-weight:900; color:var(--primary); display:flex; align-items:center; gap:10px; }
-.page-hd p { color:var(--text-muted); font-size:0.87rem; margin-top:.3rem; }
-
-/* ═══ CARDS ═══ */
+@media (min-width: 576px) {
+  .topbar { padding: 0 1.2rem; min-height: 60px; }
+}
+@media (min-width: 768px) {
+  .topbar { padding: 0 1.5rem; }
+}
+.topbar-left { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
+#adminMenuToggle {
+  background: rgba(13,45,94,.08); border: none;
+  width: 34px; height: 34px; border-radius: 9px;
+  cursor: pointer; font-size: 1.1rem; color: var(--primary);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+@media (min-width: 992px) {
+  #adminMenuToggle { display: none !important; }
+}
+@media (min-width: 768px) {
+  #adminMenuToggle { width: 38px; height: 38px; font-size: 1.2rem; }
+}
+ 
+.topbar-title { font-size: 0.85rem; font-weight: 700; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (min-width: 576px) { .topbar-title { font-size: 0.9rem; } }
+@media (min-width: 768px) { .topbar-title { font-size: 0.95rem; } }
+.topbar-badge { background: rgba(13,45,94,.07); color: var(--primary-mid); font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+@media (max-width: 480px) { .topbar-badge { display: none; } }
+.topbar-admin { display: none; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--text-muted); flex-shrink: 0; white-space: nowrap; }
+@media (min-width: 768px) { .topbar-admin { display: flex; } }
+ 
+/* ═══════════════════════════════════════════
+   CONTENT - متجاوب
+═══════════════════════════════════════════ */
+.content { flex: 1; padding: 1rem; max-width: 1400px; margin: 0 auto; width: 100%; }
+@media (min-width: 576px) { .content { padding: 1.2rem; } }
+@media (min-width: 768px) { .content { padding: 1.5rem; } }
+@media (min-width: 1200px) { .content { padding: 1.8rem; } }
+ 
+.panel { display: none; }
+.panel.active { display: block; animation: panelIn 0.3s ease; }
+@keyframes panelIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+ 
+.page-hd { margin-bottom: 1.2rem; }
+@media (min-width: 768px) { .page-hd { margin-bottom: 1.5rem; } }
+@media (min-width: 992px) { .page-hd { margin-bottom: 1.8rem; } }
+.page-hd h1 { font-size: 1.2rem; font-weight: 900; color: var(--primary); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+@media (min-width: 576px) { .page-hd h1 { font-size: 1.3rem; } }
+@media (min-width: 768px) { .page-hd h1 { font-size: 1.4rem; gap: 9px; } }
+.page-hd p  { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.2rem; }
+@media (min-width: 768px) { .page-hd p { font-size: 0.85rem; } }
+ 
+/* ═══════════════════════════════════════════
+   CARDS - متجاوبة
+═══════════════════════════════════════════ */
 .card {
-  background:white; border-radius:var(--radius); padding:1.6rem;
-  box-shadow:var(--shadow); margin-bottom:1.5rem;
+  background: white; border-radius: var(--radius); padding: 1rem;
+  box-shadow: var(--shadow); margin-bottom: 1rem; border: none;
 }
+@media (min-width: 576px) { .card { padding: 1.2rem; margin-bottom: 1.2rem; } }
+@media (min-width: 768px) { .card { padding: 1.4rem; margin-bottom: 1.3rem; } }
 .card-title {
-  font-size:0.95rem; font-weight:700; color:var(--primary);
-  margin-bottom:1.3rem; display:flex; align-items:center; gap:8px;
-  padding-bottom:.8rem; border-bottom:1px solid var(--border);
+  font-size: 0.88rem; font-weight: 700; color: var(--primary);
+  margin-bottom: 1rem; display: flex; align-items: center; gap: 6px;
+  padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
 }
-
-/* ═══ STATS ═══ */
-.stats-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+@media (min-width: 768px) {
+  .card-title { font-size: 0.92rem; margin-bottom: 1.2rem; gap: 7px; padding-bottom: 0.75rem; }
+}
+ 
+/* ═══════════════════════════════════════════
+   STATS ROW - شبكة Bootstrap متجاوبة
+═══════════════════════════════════════════ */
 .stat-card {
-  background:white; border-radius:var(--radius); padding:1.4rem;
-  box-shadow:var(--shadow); text-align:center; position:relative; overflow:hidden;
+  background: white; border-radius: var(--radius); padding: 0.8rem;
+  box-shadow: var(--shadow); text-align: center; position: relative; overflow: hidden;
+  transition: transform 0.2s;
+}
+.stat-card:active { transform: scale(0.98); }
+@media (min-width: 768px) {
+  .stat-card { padding: 1rem; }
+  .stat-card:hover { transform: translateY(-2px); }
 }
 .stat-card::after { content:''; position:absolute; top:0; right:0; left:0; height:3px; background:linear-gradient(90deg,var(--accent),var(--accent-light)); }
-.stat-card .sn { font-size:1.7rem; font-weight:900; color:var(--primary); }
-.stat-card .sl { font-size:0.72rem; color:var(--text-muted); margin-top:.2rem; }
-
-/* ═══ FORMS ═══ */
-.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
-.form-group { margin-bottom:1rem; }
-.form-group label { display:block; font-size:0.79rem; font-weight:700; color:var(--text-muted); margin-bottom:5px; }
+.stat-card .sn { font-size: 1.2rem; font-weight: 900; color: var(--primary); display: block; }
+@media (min-width: 576px) { .stat-card .sn { font-size: 1.4rem; } }
+@media (min-width: 768px) { .stat-card .sn { font-size: 1.6rem; } }
+.stat-card .sl { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.1rem; display: block; }
+@media (min-width: 576px) { .stat-card .sl { font-size: 0.7rem; } }
+ 
+/* ═══════════════════════════════════════════
+   FORMS - متجاوبة
+═══════════════════════════════════════════ */
+.form-group { margin-bottom: 0.8rem; }
+.form-group label { display: block; font-size: 0.73rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+@media (min-width: 768px) { .form-group { margin-bottom: 0.9rem; } .form-group label { font-size: 0.77rem; } }
 .form-group input,
 .form-group textarea,
 .form-group select {
-  width:100%; padding:10px 12px; border:1.5px solid var(--border);
-  border-radius:9px; font-family:'Cairo',sans-serif; font-size:0.88rem;
-  outline:none; transition:border .2s, box-shadow .2s; background:white; color:var(--text);
+  width: 100%; padding: 8px 10px; border: 1.5px solid var(--border);
+  border-radius: 8px; font-family: 'Cairo', sans-serif; font-size: 0.82rem;
+  outline: none; transition: border .2s, box-shadow .2s; background: white;
 }
-.form-group input:focus,
-.form-group textarea:focus { border-color:var(--primary-mid); box-shadow:0 0 0 3px rgba(13,45,94,0.06); }
-.form-group textarea { resize:vertical; min-height:80px; }
-.form-group input[type="color"] { height:42px; padding:4px 6px; cursor:pointer; }
-.form-full { grid-column:1/-1; }
-
-/* ═══ BUTTONS ═══ */
-.btn { padding:10px 22px; border-radius:9px; font-family:'Cairo',sans-serif; font-size:0.88rem; font-weight:700; cursor:pointer; border:none; transition:opacity .2s, transform .15s; display:inline-flex; align-items:center; gap:7px; }
-.btn:hover { opacity:.88; transform:translateY(-1px); }
-.btn-primary { background:var(--primary); color:white; }
-.btn-accent { background:linear-gradient(135deg,var(--accent),var(--accent-light)); color:var(--primary); }
-.btn-success { background:var(--success); color:white; }
-.btn-danger { background:var(--danger); color:white; }
-.btn-ghost { background:rgba(13,45,94,0.07); color:var(--primary); }
-.btn-sm { padding:7px 14px; font-size:0.8rem; }
-.btn-bar { display:flex; gap:.7rem; flex-wrap:wrap; margin-top:1.3rem; padding-top:1.1rem; border-top:1px solid var(--border); }
-
-/* ═══ GALLERY ADMIN ═══ */
-.gallery-admin-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:1rem; margin-bottom:1rem; }
+@media (min-width: 768px) {
+  .form-group input,
+  .form-group textarea,
+  .form-group select { padding: 9px 11px; font-size: 0.86rem; }
+}
+.form-group textarea { resize: vertical; min-height: 70px; }
+ 
+/* ═══════════════════════════════════════════
+   BUTTONS - متجاوبة
+═══════════════════════════════════════════ */
+.btn-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid var(--border); }
+@media (min-width: 768px) { .btn-bar { gap: 0.6rem; margin-top: 1.2rem; padding-top: 1rem; } }
+.btn-adm { padding: 8px 16px; border-radius: 8px; font-family: 'Cairo', sans-serif; font-size: 0.8rem; font-weight: 700; cursor: pointer; border: none; transition: opacity 0.2s, transform 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+.btn-adm:active { transform: scale(0.97); }
+@media (min-width: 576px) { .btn-adm { padding: 9px 18px; font-size: 0.82rem; } }
+@media (min-width: 768px) { .btn-adm { padding: 9px 20px; font-size: 0.85rem; } }
+.btn-primary { background: var(--primary); color: white; }
+.btn-accent  { background: linear-gradient(135deg, var(--accent), var(--accent-light)); color: var(--primary); }
+.btn-success { background: var(--success); color: white; }
+.btn-danger  { background: var(--danger); color: white; }
+.btn-ghost   { background: rgba(13,45,94,.08); color: var(--primary); }
+.btn-sm      { padding: 5px 12px; font-size: 0.72rem; }
+ 
+/* ═══════════════════════════════════════════
+   GALLERY ADMIN - متجاوب
+═══════════════════════════════════════════ */
 .gal-item {
-  border:1.5px solid var(--border); border-radius:10px; overflow:hidden;
-  aspect-ratio:4/3; position:relative; background:#f6f8fc;
+  border: 1.5px solid var(--border); border-radius: 9px; overflow: hidden;
+  aspect-ratio: 4/3; position: relative; background: #f6f8fc;
 }
 .gal-item img { width:100%; height:100%; object-fit:cover; }
-.gal-item .gal-icon { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:2.2rem; }
+.gal-item .gal-icon { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:2rem; }
 .gal-item .gal-actions {
-  position:absolute; inset:0; background:rgba(0,0,0,0.55);
-  display:none; align-items:center; justify-content:center;
+  position:absolute; inset:0; background:rgba(0,0,0,.55);
+  display:none; align-items:center; justify-content:center; gap: 8px;
 }
 .gal-item:hover .gal-actions { display:flex; }
-.gal-caption { font-size:.72rem; text-align:center; padding:4px 6px; background:white; color:var(--text-muted); border-top:1px solid var(--border); }
-
-/* ═══ FAQ ADMIN ═══ */
-.faq-admin-row { background:#f8fafd; border:1.5px solid var(--border); border-radius:10px; padding:1rem; margin-bottom:.8rem; }
-.faq-row-head { display:flex; gap:8px; align-items:flex-start; }
-.faq-row-actions { display:flex; gap:6px; margin-top:.7rem; }
-
-/* ═══ COLOR PRESETS ═══ */
-.color-presets { display:flex; gap:8px; flex-wrap:wrap; margin-top:.6rem; }
-.cp { width:36px; height:36px; border-radius:8px; cursor:pointer; border:2px solid transparent; transition:transform .15s, border .15s; }
-.cp:hover { transform:scale(1.18); border-color:var(--primary); }
-
-/* ═══ TOAST ═══ */
-#toast {
-  position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(100px);
-  padding:12px 24px; border-radius:12px; color:white; font-weight:700; font-size:.88rem;
-  z-index:900; transition:transform .35s; pointer-events:none;
-  box-shadow:0 8px 28px rgba(0,0,0,0.25); min-width:200px; text-align:center;
+@media (max-width: 768px) {
+  .gal-item .gal-actions { display: flex; background: rgba(0,0,0,.7); }
+  .gal-item .gal-actions button { padding: 6px 10px; font-size: 0.7rem; }
 }
-#toast.show { transform:translateX(-50%) translateY(0); }
-#toast.success { background:#059669; }
-#toast.error { background:#dc2626; }
-
-/* ═══ DASHBOARD QUICK ACTIONS ═══ */
-.quick-actions { display:flex; flex-wrap:wrap; gap:.8rem; }
-
-/* ═══ GUIDE LIST ═══ */
-.guide-list { display:grid; gap:.7rem; }
-.guide-item { display:flex; gap:12px; align-items:flex-start; font-size:.87rem; }
-.guide-icon { width:36px; height:36px; border-radius:9px; background:rgba(13,45,94,0.07); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
-
-@media(max-width:768px){
-  #sidebar { width:100%; position:fixed; height:auto; bottom:auto; transform:translateX(100%); }
-  #sidebar.open { transform:translateX(0); }
-  #main { margin-right:0; }
-  .form-grid { grid-template-columns:1fr; }
-  .stats-row { grid-template-columns:1fr 1fr; }
+.gal-caption { font-size:0.65rem; text-align:center; padding:4px 6px; background:white; color:var(--text-muted); border-top:1px solid var(--border); word-break: break-word; }
+ 
+/* ═══════════════════════════════════════════
+   FAQ ADMIN
+═══════════════════════════════════════════ */
+.faq-admin-row {
+  background: #f8fafd; border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 0.8rem; margin-bottom: 0.6rem;
+}
+@media (min-width: 768px) {
+  .faq-admin-row { padding: 0.9rem; margin-bottom: 0.7rem; }
+}
+.faq-row-actions { display: flex; gap: 6px; margin-top: 0.5rem; flex-wrap: wrap; }
+ 
+/* ═══════════════════════════════════════════
+   COLOUR PRESETS
+═══════════════════════════════════════════ */
+.color-presets { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 0.4rem; }
+.cp {
+  width: 30px; height: 30px; border-radius: 7px; cursor: pointer;
+  border: 2px solid transparent; transition: transform 0.15s, border 0.15s;
+}
+@media (min-width: 576px) { .cp { width: 32px; height: 32px; } }
+@media (min-width: 768px) { .cp { width: 34px; height: 34px; } }
+.cp:active { transform: scale(0.95); }
+ 
+/* ═══════════════════════════════════════════
+   QUICK ACTIONS
+═══════════════════════════════════════════ */
+.quick-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.quick-actions .btn-adm { font-size: 0.75rem; padding: 7px 12px; }
+@media (min-width: 576px) { .quick-actions .btn-adm { font-size: 0.78rem; padding: 8px 14px; } }
+@media (min-width: 768px) { .quick-actions .btn-adm { font-size: 0.82rem; padding: 9px 16px; } }
+ 
+/* ═══════════════════════════════════════════
+   GUIDE
+═══════════════════════════════════════════ */
+.guide-list { display: grid; gap: 0.5rem; }
+.guide-item { display: flex; gap: 10px; align-items: flex-start; font-size: 0.8rem; }
+@media (min-width: 768px) { .guide-item { gap: 11px; font-size: 0.85rem; } }
+.guide-icon { width:30px; height:30px; border-radius:8px; background:rgba(13,45,94,.07); display:flex; align-items:center; justify-content:center; font-size:0.9rem; flex-shrink:0; }
+@media (min-width: 768px) { .guide-icon { width:34px; height:34px; font-size:1rem; } }
+ 
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+#toast {
+  position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%) translateY(100px);
+  padding: 10px 20px; border-radius: 11px; color: white; font-weight: 700; font-size: 0.8rem;
+  z-index: 900; transition: transform 0.35s; pointer-events: none;
+  box-shadow: 0 8px 28px rgba(0,0,0,.25); min-width: 160px; text-align: center;
+  white-space: nowrap;
+}
+@media (min-width: 576px) {
+  #toast { padding: 11px 22px; font-size: 0.85rem; min-width: 180px; bottom: 1.5rem; }
+}
+#toast.show { transform: translateX(-50%) translateY(0); }
+#toast.success { background: #059669; }
+#toast.error   { background: #dc2626; }
+ 
+/* ═══════════════════════════════════════════
+   تحسينات إضافية للهواتف
+═══════════════════════════════════════════ */
+@media (max-width: 576px) {
+  .row { --bs-gutter-x: 0.75rem; }
+  .btn-bar .btn-adm { flex: 1 1 auto; text-align: center; justify-content: center; }
+  .quick-actions .btn-adm { flex: 1 0 auto; text-align: center; justify-content: center; }
+}
+ 
+/* منع التمرير الخلفي عند فتح القائمة */
+body.sidebar-open { overflow: hidden; }
+ 
+/* تحسين اللمس على الأجهزة المحمولة */
+@media (max-width: 768px) {
+  button, .sb-item, .cp, .btn-adm { 
+    -webkit-tap-highlight-color: transparent; 
+    touch-action: manipulation;
+  }
 }
 </style>
 </head>
 <body>
-
-<!-- ═══ LOGIN OVERLAY ═══ -->
+ 
+<!-- ═══════════════════ LOGIN ═══════════════════ -->
 <div id="loginOverlay">
   <div class="login-card">
-    <div class="login-logo">🔐</div>
+    <div class="login-logo"><i class="fas fa-school"></i></div>
     <h1>لوحة الإدارة</h1>
-    <p class="sub">مدرسة النور الابتدائية — دخول المشرفين</p>
+    <p class="sub">مدرسة النور — دخول المشرفين</p>
     <div class="login-field">
-      <label>اسم المستخدم</label>
+      <label><i class="fas fa-user"></i> اسم المستخدم</label>
       <input type="text" id="loginUser" placeholder="admin" autocomplete="username">
     </div>
     <div class="login-field">
-      <label>كلمة المرور</label>
-      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      <label><i class="fas fa-lock"></i> كلمة المرور</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter')doLogin()">
     </div>
-    <button class="login-btn" onclick="doLogin()">🔓 دخول إلى لوحة التحكم</button>
-    <p class="login-err" id="loginErr">❌ بيانات الدخول غير صحيحة</p>
-    <p class="login-hint">الحساب الافتراضي: admin / admin123</p>
+    <button class="login-btn" id="loginBtn" onclick="doLogin()"><i class="fas fa-unlock-alt"></i> دخول إلى لوحة التحكم</button>
+    <p class="login-err" id="loginErr"><i class="fas fa-exclamation-circle"></i> بيانات الدخول غير صحيحة</p>
+    <p class="login-hint"><i class="fas fa-info-circle"></i> الحساب الافتراضي: admin / admin123</p>
   </div>
 </div>
-
-<!-- ═══ SIDEBAR ═══ -->
+ 
+<!-- ═══════════════════ BACKDROP ═══════════════════ -->
+<div id="sidebarBackdrop" onclick="closeAdminSidebar()"></div>
+ 
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
 <aside id="sidebar">
   <div class="sb-brand">
-    <div class="sb-logo">🏫</div>
+    <div class="sb-logo"><i class="fas fa-chalkboard-user"></i></div>
     <div>
       <div class="sb-name">لوحة الإدارة</div>
       <div class="sb-role">مدرسة النور الابتدائية</div>
     </div>
+    <button class="sb-close-btn" onclick="closeAdminSidebar()" aria-label="إغلاق"><i class="fas fa-times"></i></button>
   </div>
+ 
+   <nav class="sb-nav">
+    <div class="sb-section"><i class="fas fa-tachometer-alt"></i> الرئيسية</div>
+    <button class="sb-item active" onclick="showPanel('pDashboard')"><span class="sbi"><i class="fas fa-chart-line"></i></span> لوحة التحكم</button>
+ 
+    <div class="sb-section"><i class="fas fa-cog"></i> إدارة المحتوى</div>
+    <button class="sb-item" onclick="showPanel('pHero')"><span class="sbi"><i class="fas fa-home"></i></span> الصفحة الرئيسية</button>
+    <button class="sb-item" onclick="showPanel('pInfo')"><span class="sbi"><i class="fas fa-info-circle"></i></span> معلومات المدرسة</button>
+    <button class="sb-item" onclick="showPanel('pAddress')"><span class="sbi"><i class="fas fa-map-marker-alt"></i></span> العنوان والتواصل</button>
+    <button class="sb-item" onclick="showPanel('pGallery')"><span class="sbi"><i class="fas fa-images"></i></span> معرض الصور</button>
+    <button class="sb-item" onclick="showPanel('pFaq')"><span class="sbi"><i class="fas fa-question-circle"></i></span> الأسئلة الشائعة</button>
 
-  <nav class="sb-nav">
-    <div class="sb-section">الرئيسية</div>
-    <button class="sb-item active" onclick="showPanel('pDashboard')"><span class="sbi">📊</span> لوحة التحكم</button>
+    <!-- ✅ أضف هذه الأزرار الجديدة -->
+    <div class="sb-section"><i class="fas fa-users"></i> إدارة الفريق</div>
+    <button class="sb-item" onclick="showPanel('pStaff')">
+      <span class="sbi"><i class="fas fa-chalkboard-user"></i></span> فريق المدرسة
+    </button>
 
-    <div class="sb-section">إدارة المحتوى</div>
-    <button class="sb-item" onclick="showPanel('pHero')"><span class="sbi">🏠</span> الصفحة الرئيسية</button>
-    <button class="sb-item" onclick="showPanel('pInfo')"><span class="sbi">ℹ️</span> معلومات المدرسة</button>
-    <button class="sb-item" onclick="showPanel('pAddress')"><span class="sbi">📍</span> العنوان والتواصل</button>
-    <button class="sb-item" onclick="showPanel('pGallery')"><span class="sbi">🖼️</span> معرض الصور</button>
-    <button class="sb-item" onclick="showPanel('pFaq')"><span class="sbi">❓</span> الأسئلة الشائعة</button>
-
-    <div class="sb-section">التخصيص</div>
-    <button class="sb-item" onclick="showPanel('pDesign')"><span class="sbi">🎨</span> الألوان والتصميم</button>
-
-    <div class="sb-section">الحساب</div>
-    <button class="sb-item" onclick="showPanel('pSettings')"><span class="sbi">⚙️</span> الإعدادات والأمان</button>
+    <div class="sb-section"><i class="fas fa-star"></i> التقييمات</div>
+    <button class="sb-item" onclick="showPanel('pReviewsAdmin')">
+      <span class="sbi"><i class="fas fa-star"></i></span> إدارة التقييمات
+    </button>
+ 
+    <div class="sb-section"><i class="fas fa-palette"></i> التخصيص</div>
+    <button class="sb-item" onclick="showPanel('pDesign')"><span class="sbi"><i class="fas fa-paintbrush"></i></span> الألوان والتصميم</button>
+ 
+    <div class="sb-section"><i class="fas fa-user-shield"></i> الحساب</div>
+    <button class="sb-item" onclick="showPanel('pSettings')"><span class="sbi"><i class="fas fa-sliders-h"></i></span> الإعدادات والأمان</button>
   </nav>
-
   <div class="sb-footer">
-    <a href="index.html" target="_blank" class="sb-preview">👁️ معاينة الموقع</a>
-    <button class="sb-logout" onclick="doLogout()">🚪 تسجيل الخروج</button>
+    <a href="index.html" target="_blank" class="sb-preview"><i class="fas fa-eye"></i> معاينة الموقع</a>
+    <button class="sb-logout" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
   </div>
+  
 </aside>
-
-<!-- ═══ MAIN ═══ -->
+ 
+<!-- ═══════════════════ MAIN ═══════════════════ -->
 <div id="main">
   <div class="topbar">
     <div class="topbar-left">
+      <button id="adminMenuToggle" onclick="toggleAdminSidebar()" aria-label="القائمة"><i class="fas fa-bars"></i></button>
       <span class="topbar-title" id="topbarTitle">لوحة التحكم</span>
       <span class="topbar-badge" id="topbarBadge">الرئيسية</span>
     </div>
     <div class="topbar-admin">
       <span>مرحباً،</span>
       <strong id="adminUsername">المدير</strong>
-      <span>👋</span>
+      <i class="fas fa-smile-wink"></i>
     </div>
+
+    <button class="sb-item" onclick="showPanel('pStaff')">
+  <span class="sbi"><i class="fas fa-users"></i></span> فريق المدرسة
+</button>
   </div>
-
+ 
   <div class="content">
-
-    <!-- ═══ DASHBOARD ═══ -->
+ 
+    <!-- ══════════ DASHBOARD ══════════ -->
     <div class="panel active" id="pDashboard">
       <div class="page-hd">
-        <h1>📊 لوحة التحكم</h1>
+        <h1><i class="fas fa-chart-line"></i> لوحة التحكم</h1>
         <p>نظرة عامة على حالة الموقع المدرسي</p>
       </div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="sn" id="dSchoolName" style="font-size:1rem">—</div><div class="sl">اسم المدرسة</div></div>
-        <div class="stat-card"><div class="sn" id="dStudents">—</div><div class="sl">عدد الطلاب</div></div>
-        <div class="stat-card"><div class="sn" id="dTeachers">—</div><div class="sl">عدد المعلمين</div></div>
-        <div class="stat-card"><div class="sn" id="dGallery">—</div><div class="sl">صور المعرض</div></div>
-        <div class="stat-card"><div class="sn" id="dFaqs">—</div><div class="sl">أسئلة شائعة</div></div>
-      </div>
-      <div class="card">
-        <div class="card-title">⚡ إجراءات سريعة</div>
-        <div class="quick-actions">
-          <button class="btn btn-primary" onclick="showPanel('pHero')">✏️ تعديل الصفحة الرئيسية</button>
-          <button class="btn btn-accent" onclick="showPanel('pGallery')">🖼️ إدارة الصور</button>
-          <button class="btn btn-ghost" onclick="showPanel('pFaq')">❓ إدارة الأسئلة</button>
-          <a href="index.html" target="_blank" class="btn btn-success" style="text-decoration:none">👁️ معاينة الموقع</a>
+ 
+      <div class="row g-2 g-sm-3 g-md-4 mb-3 mb-md-4">
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <div class="stat-card"><span class="sn" id="dSchoolName" style="font-size:0.8rem">—</span><span class="sl"><i class="fas fa-school"></i> المدرسة</span></div>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <div class="stat-card"><span class="sn" id="dStudents">—</span><span class="sl"><i class="fas fa-users"></i> الطلاب</span></div>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <div class="stat-card"><span class="sn" id="dTeachers">—</span><span class="sl"><i class="fas fa-chalkboard-user"></i> المعلمون</span></div>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <div class="stat-card"><span class="sn" id="dGallery">—</span><span class="sl"><i class="fas fa-images"></i> الصور</span></div>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <div class="stat-card"><span class="sn" id="dFaqs">—</span><span class="sl"><i class="fas fa-question-circle"></i> الأسئلة</span></div>
         </div>
       </div>
+ 
       <div class="card">
-        <div class="card-title">📖 دليل الاستخدام</div>
+        <div class="card-title"><i class="fas fa-bolt"></i> إجراءات سريعة</div>
+        <div class="quick-actions">
+          <button class="btn-adm btn-primary" onclick="showPanel('pHero')"><i class="fas fa-edit"></i> تعديل الرئيسية</button>
+          <button class="btn-adm btn-accent"  onclick="showPanel('pGallery')"><i class="fas fa-images"></i> إدارة الصور</button>
+          <button class="btn-adm btn-ghost"   onclick="showPanel('pFaq')"><i class="fas fa-question-circle"></i> إدارة الأسئلة</button>
+          <a href="index.html" target="_blank" class="btn-adm btn-success" style="text-decoration:none"><i class="fas fa-eye"></i> معاينة الموقع</a>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title"><i class="fas fa-book-open"></i> دليل الاستخدام</div>
         <div class="guide-list">
-          <div class="guide-item"><div class="guide-icon">🎯</div><span>من القائمة الجانبية، اختر القسم الذي تريد تعديله</span></div>
-          <div class="guide-item"><div class="guide-icon">💾</div><span>بعد التعديل، اضغط زر "حفظ" — تُحفظ البيانات في قاعدة البيانات مباشرة</span></div>
-          <div class="guide-item"><div class="guide-icon">👁️</div><span>اضغط "معاينة الموقع" أسفل القائمة لمشاهدة التعديلات فوراً</span></div>
-          <div class="guide-item"><div class="guide-icon">🔐</div><span>يمكنك تغيير كلمة المرور من قسم الإعدادات والأمان</span></div>
+          <div class="guide-item"><div class="guide-icon"><i class="fas fa-bullseye"></i></div><span>من القائمة الجانبية، اختر القسم الذي تريد تعديله</span></div>
+          <div class="guide-item"><div class="guide-icon"><i class="fas fa-save"></i></div><span>بعد التعديل، اضغط زر "حفظ" — تُحفظ البيانات في قاعدة البيانات مباشرة</span></div>
+          <div class="guide-item"><div class="guide-icon"><i class="fas fa-eye"></i></div><span>اضغط "معاينة الموقع" أسفل القائمة لمشاهدة التعديلات فوراً</span></div>
+          <div class="guide-item"><div class="guide-icon"><i class="fas fa-lock"></i></div><span>يمكنك تغيير كلمة المرور من قسم الإعدادات والأمان</span></div>
         </div>
       </div>
     </div>
-
-    <!-- ═══ HERO PANEL ═══ -->
+ 
+    <!-- ══════════ HERO PANEL ══════════ -->
     <div class="panel" id="pHero">
-      <div class="page-hd"><h1>🏠 الصفحة الرئيسية</h1><p>تحكم في محتوى البانر والإحصائيات</p></div>
+      <div class="page-hd"><h1><i class="fas fa-home"></i> الصفحة الرئيسية</h1><p>تحكم في محتوى البانر والإحصائيات</p></div>
       <div class="card">
-        <div class="card-title">🏫 اسم المدرسة</div>
+        <div class="card-title"><i class="fas fa-school"></i> اسم المدرسة</div>
         <div class="form-group"><label>اسم المدرسة (يظهر في كل الصفحات)</label><input type="text" id="f_school_name" placeholder="مدرسة النور الابتدائية"></div>
       </div>
       <div class="card">
-        <div class="card-title">📝 نصوص البانر</div>
+        <div class="card-title"><i class="fas fa-heading"></i> نصوص البانر</div>
         <div class="form-group"><label>العنوان الرئيسي</label><input type="text" id="f_hero_title" placeholder="مدرسة النور الابتدائية"></div>
         <div class="form-group"><label>النص التوضيحي</label><textarea id="f_hero_subtitle" placeholder="نبني جيلاً متعلماً ومبدعاً..."></textarea></div>
       </div>
       <div class="card">
-        <div class="card-title">📈 الأرقام والإحصائيات</div>
-        <div class="form-grid">
-          <div class="form-group"><label>👨‍🎓 عدد الطلاب</label><input type="number" id="f_stat_students" placeholder="800"></div>
-          <div class="form-group"><label>👩‍🏫 عدد المعلمين</label><input type="number" id="f_stat_teachers" placeholder="60"></div>
-          <div class="form-group"><label>📅 سنة التأسيس</label><input type="number" id="f_stat_year" placeholder="1995"></div>
-          <div class="form-group"><label>🏫 عدد الفصول</label><input type="number" id="f_stat_classes" placeholder="32"></div>
+        <div class="card-title"><i class="fas fa-chart-simple"></i> الأرقام والإحصائيات</div>
+        <div class="row g-2 g-md-3">
+          <div class="col-6 col-md-3"><div class="form-group"><label><i class="fas fa-user-graduate"></i> عدد الطلاب</label><input type="number" id="f_stat_students" placeholder="800"></div></div>
+          <div class="col-6 col-md-3"><div class="form-group"><label><i class="fas fa-chalkboard-user"></i> عدد المعلمين</label><input type="number" id="f_stat_teachers" placeholder="60"></div></div>
+          <div class="col-6 col-md-3"><div class="form-group"><label><i class="fas fa-calendar-alt"></i> سنة التأسيس</label><input type="number" id="f_stat_year" placeholder="1995"></div></div>
+          <div class="col-6 col-md-3"><div class="form-group"><label><i class="fas fa-door-open"></i> عدد الفصول</label><input type="number" id="f_stat_classes" placeholder="32"></div></div>
         </div>
       </div>
-      <div class="btn-bar">
-        <button class="btn btn-primary" onclick="saveSettings()">💾 حفظ التغييرات</button>
-      </div>
+      <div class="btn-bar"><button class="btn-adm btn-primary" onclick="saveSettings()"><i class="fas fa-save"></i> حفظ التغييرات</button></div>
     </div>
-
-    <!-- ═══ INFO PANEL ═══ -->
+ 
+    <!-- ══════════ INFO PANEL ══════════ -->
     <div class="panel" id="pInfo">
-      <div class="page-hd"><h1>ℹ️ معلومات المدرسة</h1><p>تحديث البطاقات الإعلامية</p></div>
+      <div class="page-hd"><h1><i class="fas fa-info-circle"></i> معلومات المدرسة</h1><p>تحديث البطاقات الإعلامية</p></div>
       <div class="card">
-        <div class="card-title">📋 البيانات الأساسية</div>
-        <div class="form-grid">
-          <div class="form-group"><label>⏰ أوقات الدوام</label><input type="text" id="f_info_hours" placeholder="7:30 ص – 1:30 م"></div>
-          <div class="form-group"><label>📞 رقم الهاتف</label><input type="text" id="f_info_phone" placeholder="+966 11 234 5678"></div>
-          <div class="form-group"><label>📧 البريد الإلكتروني</label><input type="email" id="f_info_email"></div>
-          <div class="form-group"><label>👨‍💼 مدير المدرسة</label><input type="text" id="f_info_principal"></div>
-          <div class="form-group"><label>📖 المرحلة الدراسية</label><input type="text" id="f_info_level"></div>
-          <div class="form-group"><label>📍 الموقع / الحي</label><input type="text" id="f_info_location"></div>
+        <div class="card-title"><i class="fas fa-database"></i> البيانات الأساسية</div>
+        <div class="row g-2 g-md-3">
+          <div class="col-12 col-md-6"><div class="form-group"><label><i class="fas fa-clock"></i> أوقات الدوام</label><input type="text" id="f_info_hours" placeholder="7:30 ص – 1:30 م"></div></div>
+          <div class="col-12 col-md-6"><div class="form-group"><label><i class="fas fa-phone"></i> رقم الهاتف</label><input type="text" id="f_info_phone" placeholder="+966 11 234 5678"></div></div>
+          <div class="col-12 col-md-6"><div class="form-group"><label><i class="fas fa-envelope"></i> البريد الإلكتروني</label><input type="email" id="f_info_email"></div></div>
+          <div class="col-12 col-md-6"><div class="form-group"><label><i class="fas fa-user-tie"></i> مدير المدرسة</label><input type="text" id="f_info_principal"></div></div>
+          <div class="col-12 col-md-6"><div class="form-group"><label><i class="fas fa-graduation-cap"></i> المرحلة الدراسية</label><input type="text" id="f_info_level"></div></div>
+          <div class="col-12 col-md-6"><div class="form-group"><label><i class="fas fa-location-dot"></i> الموقع / الحي</label><input type="text" id="f_info_location"></div></div>
         </div>
       </div>
-      <div class="btn-bar">
-        <button class="btn btn-primary" onclick="saveSettings()">💾 حفظ المعلومات</button>
-      </div>
+      <div class="btn-bar"><button class="btn-adm btn-primary" onclick="saveSettings()"><i class="fas fa-save"></i> حفظ المعلومات</button></div>
     </div>
-
-    <!-- ═══ ADDRESS PANEL ═══ -->
+ 
+    <!-- ══════════ ADDRESS PANEL ══════════ -->
     <div class="panel" id="pAddress">
-      <div class="page-hd"><h1>📍 العنوان ووسائل التواصل</h1><p>بيانات الموقع وقنوات التواصل</p></div>
+      <div class="page-hd"><h1><i class="fas fa-map-marker-alt"></i> العنوان ووسائل التواصل</h1><p>بيانات الموقع وقنوات التواصل</p></div>
       <div class="card">
-        <div class="card-title">🏠 بيانات العنوان</div>
+        <div class="card-title"><i class="fas fa-location-dot"></i> بيانات العنوان</div>
         <div class="form-group"><label>الشارع والحي</label><input type="text" id="f_addr_street"></div>
-        <div class="form-grid">
-          <div class="form-group"><label>📮 الرمز البريدي</label><input type="text" id="f_addr_postal"></div>
-          <div class="form-group"><label>📞 هاتف العنوان</label><input type="text" id="f_addr_phone"></div>
-          <div class="form-group"><label>📠 الفاكس</label><input type="text" id="f_addr_fax"></div>
-          <div class="form-group"><label>🕐 ساعات الاستقبال</label><input type="text" id="f_addr_hours"></div>
+        <div class="row g-2 g-md-3">
+          <div class="col-6 col-md-3"><div class="form-group"><label><i class="fas fa-mail-bulk"></i> الرمز البريدي</label><input type="text" id="f_addr_postal"></div></div>
+          <div class="col-6 col-md-3"><div class="form-group"><label><i class="fas fa-phone-alt"></i> هاتف العنوان</label><input type="text" id="f_addr_phone"></div></div>
+          <div class="col-6 col-md-3"><div class="form-group"><label><i class="fas fa-fax"></i> الفاكس</label><input type="text" id="f_addr_fax"></div></div>
+          <div class="col-6 col-md-3"><div class="form-group"><label><i class="fas fa-clock"></i> ساعات الاستقبال</label><input type="text" id="f_addr_hours"></div></div>
         </div>
       </div>
       <div class="card">
-        <div class="card-title">📲 وسائل التواصل</div>
-        <div class="form-grid">
-          <div class="form-group"><label>✉️ البريد الإلكتروني (Gmail)</label><input type="email" id="f_gmail_email" placeholder="school@gmail.com"></div>
-          <div class="form-group"><label>📱 رقم واتساب (مع رمز الدولة)</label><input type="text" id="f_whatsapp_num" placeholder="966512345678"></div>
+        <div class="card-title"><i class="fas fa-hashtag"></i> وسائل التواصل</div>
+        <div class="row g-2 g-md-3">
+          <div class="col-12 col-md-6"><div class="form-group"><label><i class="fas fa-envelope"></i> البريد الإلكتروني (Gmail)</label><input type="email" id="f_gmail_email" placeholder="school@gmail.com"></div></div>
+          <div class="col-12 col-md-6"><div class="form-group"><label><i class="fab fa-whatsapp"></i> رقم واتساب (مع رمز الدولة)</label><input type="text" id="f_whatsapp_num" placeholder="966512345678"></div></div>
         </div>
       </div>
-      <div class="btn-bar">
-        <button class="btn btn-primary" onclick="saveSettings()">💾 حفظ بيانات التواصل</button>
-      </div>
+      <div class="btn-bar"><button class="btn-adm btn-primary" onclick="saveSettings()"><i class="fas fa-save"></i> حفظ بيانات التواصل</button></div>
     </div>
 
-    <!-- ═══ GALLERY PANEL ═══ -->
-    <div class="panel" id="pGallery">
-      <div class="page-hd"><h1>🖼️ معرض الصور</h1><p>إضافة وحذف صور المدرسة</p></div>
-      <div class="card">
-        <div class="card-title">➕ إضافة صورة جديدة</div>
-        <div class="form-grid">
-          <div class="form-group"><label>رابط الصورة (اختياري)</label><input type="text" id="gNewUrl" placeholder="https://..."></div>
-          <div class="form-group"><label>وصف الصورة</label><input type="text" id="gNewCaption" placeholder="مثال: مكتبة المدرسة"></div>
-          <div class="form-group"><label>رمز تعبيري (إذا لا يوجد رابط)</label><input type="text" id="gNewEmoji" placeholder="🏫"></div>
+<!-- ══════════ GALLERY PANEL ══════════ -->
+<div class="panel" id="pGallery">
+  <div class="page-hd"><h1><i class="fas fa-images"></i> معرض الصور</h1><p>إضافة وحذف صور المدرسة</p></div>
+  
+  <!-- ✅ قسم رفع الصور من الجهاز (جديد) -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-cloud-upload-alt"></i> 📱 رفع صورة من جهازك</div>
+    <div class="row g-2 g-md-3 align-items-end">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label><i class="fas fa-image"></i> اختر صورة</label>
+          <input type="file" id="imageFile" accept="image/*" class="form-control" style="padding: 8px;">
+          <small class="text-muted" style="font-size: 0.7rem;">✅ يدعم: PNG, JPG, JPEG, GIF - الحد الأقصى 5MB</small>
         </div>
-        <button class="btn btn-accent" onclick="addGalleryItem()">➕ إضافة إلى المعرض</button>
       </div>
-      <div class="card">
-        <div class="card-title">🗂️ الصور الحالية</div>
-        <div class="gallery-admin-grid" id="galleryAdminGrid">
-          <p style="color:var(--text-muted);font-size:.85rem">جاري التحميل...</p>
+      <div class="col-12 col-md-4">
+        <div class="form-group">
+          <label><i class="fas fa-tag"></i> وصف الصورة (اختياري)</label>
+          <input type="text" id="imageCaption" class="form-control" placeholder="مثال: مكتبة المدرسة">
+        </div>
+      </div>
+      <div class="col-12 col-md-2">
+        <button class="btn-adm btn-accent w-100" onclick="uploadImage()">
+          <i class="fas fa-cloud-upload-alt"></i> رفع
+        </button>
+      </div>
+    </div>
+    <div id="uploadProgress" class="mt-2" style="display: none;">
+      <div class="progress" style="height: 30px;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%; line-height: 30px;">
+          جاري الرفع...
         </div>
       </div>
     </div>
-
-    <!-- ═══ FAQ PANEL ═══ -->
+  </div>
+  
+  <!-- ✅ القسم القديم: إضافة صورة عبر رابط أو رمز (محتفظ به) -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-link"></i> إضافة صورة عبر رابط أو رمز</div>
+    <div class="row g-2 g-md-3">
+      <div class="col-12 col-md-5"><div class="form-group"><label>رابط الصورة (اختياري)</label><input type="text" id="gNewUrl" placeholder="https://..."></div></div>
+      <div class="col-12 col-md-5"><div class="form-group"><label>وصف الصورة</label><input type="text" id="gNewCaption" placeholder="مثال: مكتبة المدرسة"></div></div>
+      <div class="col-12 col-md-2"><div class="form-group"><label>رمز (بدون رابط)</label><input type="text" id="gNewEmoji" placeholder="🏫"></div></div>
+    </div>
+    <button class="btn-adm btn-accent" onclick="addGalleryItem()"><i class="fas fa-plus"></i> إضافة إلى المعرض</button>
+  </div>
+  
+  <div class="card">
+    <div class="card-title"><i class="fas fa-folder-open"></i> الصور الحالية</div>
+    <div class="row g-2 g-md-3" id="galleryAdminGrid">
+      <div class="col-12"><p style="color:var(--text-muted);font-size:0.8rem"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</p></div>
+    </div>
+  </div>
+</div>
+ 
+    <!-- ══════════ FAQ PANEL ══════════ -->
     <div class="panel" id="pFaq">
-      <div class="page-hd"><h1>❓ الأسئلة الشائعة</h1><p>تعديل وإضافة أسئلة المساعدة</p></div>
+      <div class="page-hd"><h1><i class="fas fa-question-circle"></i> الأسئلة الشائعة</h1><p>تعديل وإضافة أسئلة المساعدة</p></div>
       <div class="card">
-        <div class="card-title">📝 الأسئلة الحالية</div>
+        <div class="card-title"><i class="fas fa-list"></i> الأسئلة الحالية</div>
         <div id="faqAdminList"></div>
-        <button class="btn btn-accent" onclick="addFaqItem()" style="margin-top:.5rem">➕ إضافة سؤال جديد</button>
+        <button class="btn-adm btn-accent" onclick="addFaqItem()" style="margin-top:0.5rem"><i class="fas fa-plus"></i> إضافة سؤال جديد</button>
       </div>
     </div>
-
-    <!-- ═══ DESIGN PANEL ═══ -->
+ 
+    <!-- ══════════ DESIGN PANEL ══════════ -->
     <div class="panel" id="pDesign">
-      <div class="page-hd"><h1>🎨 الألوان والتصميم</h1><p>تخصيص مظهر الموقع</p></div>
+      <div class="page-hd"><h1><i class="fas fa-palette"></i> الألوان والتصميم</h1><p>تخصيص مظهر الموقع</p></div>
       <div class="card">
-        <div class="card-title">🌅 خلفية قسم البانر</div>
-        <div class="form-grid">
-          <div class="form-group"><label>لون بداية التدرج</label><input type="color" id="f_heroBgFrom" value="#0d2d5e"></div>
-          <div class="form-group"><label>لون نهاية التدرج</label><input type="color" id="f_heroBgTo" value="#3876c5"></div>
+        <div class="card-title"><i class="fas fa-image"></i> خلفية قسم البانر</div>
+        <div class="row g-2 g-md-3">
+          <div class="col-6 col-md-4"><div class="form-group"><label>لون بداية التدرج</label><input type="color" id="f_heroBgFrom" value="#0d2d5e"></div></div>
+          <div class="col-6 col-md-4"><div class="form-group"><label>لون نهاية التدرج</label><input type="color" id="f_heroBgTo" value="#3876c5"></div></div>
         </div>
-        <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:8px">ألوان جاهزة للبانر:</p>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:7px"><i class="fas fa-palette"></i> ألوان جاهزة للبانر:</p>
         <div class="color-presets">
-          <div class="cp" style="background:linear-gradient(135deg,#0d2d5e,#3876c5)" title="أزرق كحلي" onclick="setHeroBg('#0d2d5e','#3876c5')"></div>
-          <div class="cp" style="background:linear-gradient(135deg,#065f46,#34d399)" title="أخضر" onclick="setHeroBg('#065f46','#34d399')"></div>
-          <div class="cp" style="background:linear-gradient(135deg,#7c3aed,#c084fc)" title="بنفسجي" onclick="setHeroBg('#7c3aed','#c084fc')"></div>
-          <div class="cp" style="background:linear-gradient(135deg,#9f1239,#fb7185)" title="أحمر" onclick="setHeroBg('#9f1239','#fb7185')"></div>
-          <div class="cp" style="background:linear-gradient(135deg,#92400e,#f59e0b)" title="ذهبي" onclick="setHeroBg('#92400e','#f59e0b')"></div>
-          <div class="cp" style="background:linear-gradient(135deg,#1e293b,#475569)" title="رمادي" onclick="setHeroBg('#1e293b','#475569')"></div>
-          <div class="cp" style="background:linear-gradient(135deg,#0c4a6e,#0ea5e9)" title="سماوي" onclick="setHeroBg('#0c4a6e','#0ea5e9')"></div>
+          <div class="cp" style="background:linear-gradient(135deg,#0d2d5e,#3876c5)" onclick="setHeroBg('#0d2d5e','#3876c5')"></div>
+          <div class="cp" style="background:linear-gradient(135deg,#065f46,#34d399)" onclick="setHeroBg('#065f46','#34d399')"></div>
+          <div class="cp" style="background:linear-gradient(135deg,#7c3aed,#c084fc)" onclick="setHeroBg('#7c3aed','#c084fc')"></div>
+          <div class="cp" style="background:linear-gradient(135deg,#9f1239,#fb7185)" onclick="setHeroBg('#9f1239','#fb7185')"></div>
+          <div class="cp" style="background:linear-gradient(135deg,#92400e,#f59e0b)" onclick="setHeroBg('#92400e','#f59e0b')"></div>
+          <div class="cp" style="background:linear-gradient(135deg,#1e293b,#475569)" onclick="setHeroBg('#1e293b','#475569')"></div>
         </div>
       </div>
       <div class="card">
-        <div class="card-title">🖥️ لون خلفية الصفحة</div>
-        <div class="form-group"><input type="color" id="f_pageBg" value="#f0f4f9"></div>
-        <div class="color-presets">
+        <div class="card-title"><i class="fas fa-fill-drip"></i> لون خلفية الصفحة</div>
+        <div class="row g-2 align-items-center">
+          <div class="col-auto"><div class="form-group" style="margin:0"><input type="color" id="f_pageBg" value="#f0f4f9"></div></div>
+        </div>
+        <div class="color-presets mt-2">
           <div class="cp" style="background:#f0f4f9;border:1px solid #ddd" onclick="document.getElementById('f_pageBg').value='#f0f4f9'"></div>
           <div class="cp" style="background:#ffffff;border:1px solid #ddd" onclick="document.getElementById('f_pageBg').value='#ffffff'"></div>
           <div class="cp" style="background:#f0fdf4" onclick="document.getElementById('f_pageBg').value='#f0fdf4'"></div>
@@ -494,32 +752,699 @@ body { font-family:'Cairo',sans-serif; background:var(--bg); color:var(--text); 
           <div class="cp" style="background:#f0f4ff" onclick="document.getElementById('f_pageBg').value='#f0f4ff'"></div>
         </div>
       </div>
-      <div class="btn-bar">
-        <button class="btn btn-primary" onclick="saveDesign()">💾 حفظ التصميم</button>
+      <div class="btn-bar"><button class="btn-adm btn-primary" onclick="saveDesign()"><i class="fas fa-save"></i> حفظ التصميم</button></div>
+    </div>
+ 
+    <!-- ══════════ SETTINGS PANEL ══════════ -->
+    <div class="panel" id="pSettings">
+      <div class="page-hd"><h1><i class="fas fa-sliders-h"></i> الإعدادات والأمان</h1><p>إدارة حساب الإدارة</p></div>
+      <div class="card">
+        <div class="card-title"><i class="fas fa-key"></i> تغيير كلمة المرور</div>
+        <div class="row g-2 g-md-3">
+          <div class="col-12 col-md-4"><div class="form-group"><label>كلمة المرور الحالية</label><input type="password" id="oldPass"></div></div>
+          <div class="col-12 col-md-4"><div class="form-group"><label>كلمة المرور الجديدة</label><input type="password" id="newPass"></div></div>
+          <div class="col-12 col-md-4"><div class="form-group"><label>تأكيد كلمة المرور الجديدة</label><input type="password" id="confirmPass"></div></div>
+        </div>
+        <div class="btn-bar"><button class="btn-adm btn-primary" onclick="changePassword()"><i class="fas fa-save"></i> حفظ كلمة المرور</button></div>
       </div>
     </div>
 
-    <!-- ═══ SETTINGS PANEL ═══ -->
-    <div class="panel" id="pSettings">
-      <div class="page-hd"><h1>⚙️ الإعدادات والأمان</h1><p>إدارة حساب الإدارة</p></div>
-      <div class="card">
-        <div class="card-title">🔐 تغيير كلمة المرور</div>
-        <div class="form-group"><label>كلمة المرور الحالية</label><input type="password" id="oldPass"></div>
-        <div class="form-group"><label>كلمة المرور الجديدة</label><input type="password" id="newPass"></div>
-        <div class="form-group"><label>تأكيد كلمة المرور الجديدة</label><input type="password" id="confirmPass"></div>
-        <div class="btn-bar">
-          <button class="btn btn-primary" onclick="changePassword()">💾 حفظ كلمة المرور</button>
+
+
+    <!-- ══════════ STAFF PANEL ══════════ -->
+<div class="panel" id="pStaff">
+  <div class="page-hd">
+    <h1><i class="fas fa-users"></i> فريق المدرسة</h1>
+    <p>إدارة أعضاء هيئة التدريس والإدارة</p>
+  </div>
+
+  <!-- إضافة موظف جديد -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-user-plus"></i> إضافة عضو جديد</div>
+    <div class="row g-2 g-md-3">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> الاسم الكامل</label>
+          <input type="text" id="staffName" class="form-control" placeholder="أ. أحمد العلي">
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label><i class="fas fa-briefcase"></i> المنصب</label>
+          <input type="text" id="staffPosition" class="form-control" placeholder="مدير المدرسة">
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label><i class="fas fa-graduation-cap"></i> المؤهل</label>
+          <input type="text" id="staffQualification" class="form-control" placeholder="ماجستير إدارة تربوية">
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label><i class="fas fa-book"></i> التخصص/المادة</label>
+          <input type="text" id="staffSubject" class="form-control" placeholder="اللغة العربية">
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+          <input type="email" id="staffEmail" class="form-control" placeholder="email@school.com">
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label><i class="fas fa-phone"></i> رقم الهاتف</label>
+          <input type="text" id="staffPhone" class="form-control" placeholder="05xxxxxxxx">
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label><i class="fas fa-align-left"></i> نبذة تعريفية</label>
+          <textarea id="staffBio" class="form-control" rows="2" placeholder="نبذة عن العضو..."></textarea>
+        </div>
+      </div>
+      <div class="col-12 col-md-8">
+        <div class="form-group">
+          <label><i class="fas fa-image"></i> صورة العضو</label>
+          <input type="file" id="staffImage" accept="image/*" class="form-control">
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="form-group">
+          <label><i class="fas fa-sort-numeric-down"></i> ترتيب العرض</label>
+          <input type="number" id="staffOrder" class="form-control" placeholder="1, 2, 3..." value="1">
         </div>
       </div>
     </div>
+    <button class="btn-adm btn-primary mt-2" onclick="addStaff()">
+      <i class="fas fa-save"></i> إضافة عضو
+    </button>
+  </div>
 
-  </div><!-- /content -->
-</div><!-- /main -->
+  <!-- قائمة الموظفين -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-list"></i> أعضاء فريق المدرسة</div>
+    <div class="row g-3" id="staffList">
+      <div class="col-12 text-center"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+    </div>
+  </div>
+</div>
+ 
 
+<!-- ══════════ REVIEWS ADMIN PANEL ══════════ -->
+<div class="panel" id="pReviewsAdmin">
+  <div class="page-hd">
+    <h1><i class="fas fa-star"></i> إدارة التقييمات</h1>
+    <p>مراجعة ونشر تعليقات الزوار</p>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="fas fa-list"></i> التقييمات المعلقة</div>
+    <div id="reviewsAdminList"></div>
+  </div>
+</div>
+  </div>
+</div>
+ 
 <!-- TOAST -->
-<div id="toast">✅ تم الحفظ</div>
+<div id="toast"><i class="fas fa-check-circle"></i> تم الحفظ</div>
 
+
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/supabase.js"></script>
 <script src="js/admin.js"></script>
+<script>
+// =====================================================
+// إعداد اتصال Supabase (يجب أن يكون في بداية الكود)
+// =====================================================
+const supabaseUrl = 'https://kqyogtldthmeclqpiwqf.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxeW9ndGxkdGhtZWNscXBpd3FmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2ODE3MDQsImV4cCI6MjA5NjI1NzcwNH0.3TgMzmV_VlfhWC88xEp22IufUstX6Z--DYTV8Q4djWo';
+let supabase;
+
+// تحميل Supabase وتأكد من وجوده
+async function initSupabase() {
+  if (typeof window.supabase !== 'undefined') {
+    supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    console.log('✅ Supabase connected');
+  } else {
+    console.error('❌ Supabase library not loaded');
+    // محاولة تحميل المكتبة مرة أخرى
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    script.onload = () => {
+      supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+      console.log('✅ Supabase loaded and connected');
+      loadAllData(); // تحميل كل البيانات بعد الاتصال
+    };
+    document.head.appendChild(script);
+  }
+}
+
+// تحميل كل البيانات عند بدء التشغيل
+async function loadAllData() {
+  if (!supabase) {
+    console.log('Waiting for Supabase...');
+    setTimeout(loadAllData, 500);
+    return;
+  }
+  
+  try {
+    // تحميل إعدادات المدرسة
+    const { data: settings, error: settingsError } = await supabase
+      .from('settings')
+      .select('*');
+    
+    if (!settingsError && settings) {
+      settings.forEach(item => {
+        const element = document.getElementById(`f_${item.key}`);
+        if (element) element.value = item.value;
+      });
+    }
+    
+    // تحميل المعرض
+    await loadGallery();
+    
+    // تحميل الأسئلة الشائعة
+    await loadFaq();
+    
+    console.log('✅ All data loaded');
+  } catch (err) {
+    console.error('Error loading data:', err);
+  }
+}
+
+// دالة تحميل المعرض (محسنة)
+async function loadGallery() {
+  if (!supabase) {
+    console.log('Waiting for Supabase...');
+    setTimeout(loadGallery, 500);
+    return;
+  }
+  
+  try {
+    const { data, error } = await supabase
+      .from('gallery')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    const container = document.getElementById('galleryAdminGrid');
+    if (!container) return;
+    
+    if (data && data.length > 0) {
+      container.innerHTML = data.map(item => `
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="gal-item" style="position:relative;overflow:hidden;">
+            ${item.image_url ? 
+              `<img src="${item.image_url}" alt="${item.caption || 'صورة مدرسية'}" style="width:100%;height:100%;object-fit:cover;">` : 
+              `<div class="gal-icon" style="display:flex;align-items:center;justify-content:center;height:100%;font-size:3rem;">${item.emoji || '🏫'}</div>`
+            }
+            <div class="gal-caption" style="position:absolute;bottom:0;right:0;left:0;background:rgba(0,0,0,0.7);color:white;padding:5px;font-size:0.7rem;text-align:center;">${item.caption || 'مدرسة النور'}</div>
+            <div class="gal-actions" style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;transition:opacity 0.3s;">
+              <button class="btn-adm btn-sm btn-danger" onclick="deleteGalleryItem('${item.id}')" style="padding:6px 12px;font-size:0.7rem;">
+                <i class="fas fa-trash"></i> حذف
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      
+      // إضافة تأثير hover
+      document.querySelectorAll('.gal-item').forEach(item => {
+        item.addEventListener('mouseenter', () => {
+          const actions = item.querySelector('.gal-actions');
+          if (actions) actions.style.opacity = '1';
+        });
+        item.addEventListener('mouseleave', () => {
+          const actions = item.querySelector('.gal-actions');
+          if (actions) actions.style.opacity = '0';
+        });
+      });
+    } else {
+      container.innerHTML = `
+        <div class="col-12 text-center">
+          <p style="color:var(--text-muted);">📭 لا توجد صور بعد. قم بإضافة صور باستخدام الزر أعلاه!</p>
+        </div>
+      `;
+    }
+  } catch (err) {
+    console.error('Error loading gallery:', err);
+    const container = document.getElementById('galleryAdminGrid');
+    if (container) {
+      container.innerHTML = `
+        <div class="col-12 text-center">
+          <p style="color:var(--danger);">⚠️ حدث خطأ في تحميل الصور: ${err.message}</p>
+          <button class="btn-adm btn-primary mt-2" onclick="loadGallery()">محاولة مرة أخرى</button>
+        </div>
+      `;
+    }
+  }
+}
+
+// دالة إضافة صورة عبر رابط
+async function addGalleryItem() {
+  if (!supabase) {
+    showToast('Supabase not ready yet', 'error');
+    return;
+  }
+  
+  const url = document.getElementById('gNewUrl').value;
+  const caption = document.getElementById('gNewCaption').value;
+  const emoji = document.getElementById('gNewEmoji').value;
+  
+  if (!url && !emoji) {
+    showToast('الرجاء إدخال رابط صورة أو رمز تعبيري', 'error');
+    return;
+  }
+  
+  try {
+    const { data, error } = await supabase
+      .from('gallery')
+      .insert([
+        {
+          image_url: url || null,
+          caption: caption || 'صورة مدرسية',
+          emoji: emoji || '🏫',
+          created_at: new Date().toISOString()
+        }
+      ]);
+    
+    if (error) throw error;
+    
+    showToast('✅ تم إضافة الصورة بنجاح!', 'success');
+    
+    // تفريغ الحقول
+    document.getElementById('gNewUrl').value = '';
+    document.getElementById('gNewCaption').value = '';
+    document.getElementById('gNewEmoji').value = '';
+    
+    // إعادة تحميل المعرض
+    loadGallery();
+  } catch (err) {
+    console.error('Error adding gallery item:', err);
+    showToast('❌ حدث خطأ: ' + err.message, 'error');
+  }
+}
+
+// دالة حذف صورة
+async function deleteGalleryItem(itemId) {
+  if (!supabase) {
+    showToast('Supabase not ready yet', 'error');
+    return;
+  }
+  
+  if (!confirm('⚠️ هل أنت متأكد من حذف هذه الصورة؟ لا يمكن التراجع عن هذا الإجراء!')) return;
+  
+  try {
+    // الحصول على معلومات الصورة أولاً
+    const { data: imageData, error: fetchError } = await supabase
+      .from('gallery')
+      .select('image_url')
+      .eq('id', itemId)
+      .single();
+    
+    if (fetchError) throw fetchError;
+    
+    // إذا كانت الصورة مخزنة في Storage، احذفها
+    if (imageData && imageData.image_url && imageData.image_url.includes('supabase')) {
+      try {
+        const urlParts = imageData.image_url.split('/');
+        const filePath = urlParts.slice(urlParts.indexOf('gallery')).join('/');
+        await supabase.storage.from('school-images').remove([filePath]);
+      } catch (storageError) {
+        console.warn('Could not delete from storage:', storageError);
+      }
+    }
+    
+    // حذف السجل من قاعدة البيانات
+    const { error: deleteError } = await supabase
+      .from('gallery')
+      .delete()
+      .eq('id', itemId);
+    
+    if (deleteError) throw deleteError;
+    
+    showToast('🗑️ تم حذف الصورة بنجاح!', 'success');
+    loadGallery(); // إعادة تحميل المعرض
+    
+  } catch (error) {
+    console.error('Error deleting image:', error);
+    showToast('❌ حدث خطأ أثناء حذف الصورة: ' + error.message, 'error');
+  }
+}
+
+// دالة تحميل الأسئلة الشائعة
+async function loadFaq() {
+  if (!supabase) {
+    setTimeout(loadFaq, 500);
+    return;
+  }
+  
+  try {
+    const { data, error } = await supabase
+      .from('faq')
+      .select('*')
+      .order('id', { ascending: true });
+    
+    if (error) throw error;
+    
+    const container = document.getElementById('faqAdminList');
+    if (!container) return;
+    
+    if (data && data.length > 0) {
+      container.innerHTML = data.map(item => `
+        <div class="faq-admin-row">
+          <div class="form-group">
+            <label>السؤال</label>
+            <input type="text" class="form-control" value="${item.question}" id="faq_q_${item.id}">
+          </div>
+          <div class="form-group">
+            <label>الإجابة</label>
+            <textarea class="form-control" id="faq_a_${item.id}" rows="2">${item.answer}</textarea>
+          </div>
+          <div class="faq-row-actions">
+            <button class="btn-adm btn-sm btn-primary" onclick="updateFaq(${item.id})">💾 حفظ</button>
+            <button class="btn-adm btn-sm btn-danger" onclick="deleteFaq(${item.id})">🗑️ حذف</button>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      container.innerHTML = '<p class="text-muted">لا توجد أسئلة شائعة. أضف سؤالاً جديداً!</p>';
+    }
+  } catch (err) {
+    console.error('Error loading FAQ:', err);
+  }
+}
+
+// =====================================================
+// دوال إدارة فريق المدرسة
+// =====================================================
+
+// إضافة موظف
+async function addStaff() {
+  const name = document.getElementById('staffName').value;
+  const position = document.getElementById('staffPosition').value;
+  const qualification = document.getElementById('staffQualification').value;
+  const subject = document.getElementById('staffSubject').value;
+  const email = document.getElementById('staffEmail').value;
+  const phone = document.getElementById('staffPhone').value;
+  const bio = document.getElementById('staffBio').value;
+  const order = document.getElementById('staffOrder').value;
+  const imageFile = document.getElementById('staffImage').files[0];
+  
+  if (!name || !position) {
+    showToast('الاسم والمنصب مطلوبان', 'error');
+    return;
+  }
+  
+  let imageUrl = null;
+  
+  if (imageFile) {
+    const fileName = `staff/${Date.now()}-${imageFile.name}`;
+    const { data, error } = await supabase.storage
+      .from('staff-images')
+      .upload(fileName, imageFile);
+    
+    if (!error) {
+      const { data: publicUrl } = supabase.storage
+        .from('staff-images')
+        .getPublicUrl(fileName);
+      imageUrl = publicUrl.publicUrl;
+    }
+  }
+  
+  const { data, error } = await supabase
+    .from('staff')
+    .insert([{
+      name, position, qualification, subject,
+      email, phone, bio, image_url: imageUrl,
+      display_order: parseInt(order) || 0
+    }]);
+  
+  if (error) {
+    showToast('خطأ: ' + error.message, 'error');
+  } else {
+    showToast('تم إضافة العضو بنجاح', 'success');
+    loadStaff();
+    // تفريغ الحقول
+    document.getElementById('staffName').value = '';
+    document.getElementById('staffPosition').value = '';
+    document.getElementById('staffQualification').value = '';
+    document.getElementById('staffSubject').value = '';
+    document.getElementById('staffEmail').value = '';
+    document.getElementById('staffPhone').value = '';
+    document.getElementById('staffBio').value = '';
+    document.getElementById('staffImage').value = '';
+  }
+}
+
+// تحميل فريق المدرسة
+async function loadStaff() {
+  const { data, error } = await supabase
+    .from('staff')
+    .select('*')
+    .order('display_order', { ascending: true });
+  
+  if (error) {
+    console.error(error);
+    return;
+  }
+  
+  const container = document.getElementById('staffList');
+  if (container) {
+    container.innerHTML = data.map(member => `
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="info-card" style="text-align: center;">
+          ${member.image_url ? 
+            `<img src="${member.image_url}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 0 auto 1rem; display: block;">` :
+            `<div class="icon" style="margin: 0 auto 1rem; width: 80px; height: 80px; font-size: 2rem;">👨‍🏫</div>`
+          }
+          <h3>${member.name}</h3>
+          <p style="color: var(--accent); font-weight: bold;">${member.position}</p>
+          ${member.qualification ? `<p><small>📜 ${member.qualification}</small></p>` : ''}
+          ${member.subject ? `<p><small>📚 ${member.subject}</small></p>` : ''}
+          ${member.bio ? `<p><small>${member.bio}</small></p>` : ''}
+          <div class="mt-2">
+            <button class="btn-adm btn-sm btn-danger" onclick="deleteStaff(${member.id})">
+              <i class="fas fa-trash"></i> حذف
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// حذف موظف
+async function deleteStaff(id) {
+  if (!confirm('هل أنت متأكد من حذف هذا العضو؟')) return;
+  
+  const { error } = await supabase
+    .from('staff')
+    .delete()
+    .eq('id', id);
+  
+  if (error) {
+    showToast('خطأ في الحذف', 'error');
+  } else {
+    showToast('تم الحذف', 'success');
+    loadStaff();
+  }
+}
+
+// =====================================================
+// دوال نظام التقييم
+// =====================================================
+
+// إرسال تقييم جديد
+async function submitReview() {
+  const name = document.getElementById('reviewerName')?.value;
+  const rating = document.getElementById('reviewRating')?.value;
+  const comment = document.getElementById('reviewComment')?.value;
+  
+  if (!name || rating == 0) {
+    showToast('الاسم والتقييم مطلوبان', 'error');
+    return;
+  }
+  
+  const { data, error } = await supabase
+    .from('reviews')
+    .insert([{
+      reviewer_name: name,
+      rating: parseInt(rating),
+      comment: comment || '',
+      is_approved: false
+    }]);
+  
+  if (error) {
+    showToast('حدث خطأ، حاول مرة أخرى', 'error');
+  } else {
+    showToast('شكراً لتقييمك! سيتم نشره بعد المراجعة', 'success');
+    document.getElementById('reviewerName').value = '';
+    document.getElementById('reviewRating').value = '0';
+    document.getElementById('reviewComment').value = '';
+    // إعادة تعيين النجوم
+    document.querySelectorAll('#ratingInput i').forEach(star => {
+      star.className = 'far fa-star';
+    });
+    loadReviews();
+  }
+}
+
+// تحميل التقييمات المعتمدة
+async function loadReviews() {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('*')
+    .eq('is_approved', true)
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error(error);
+    return;
+  }
+  
+  // حساب المتوسط
+  if (data.length > 0) {
+    const avg = data.reduce((sum, r) => sum + r.rating, 0) / data.length;
+    document.getElementById('avgRating').textContent = avg.toFixed(1);
+    document.getElementById('totalReviews').textContent = `${data.length} تقييم`;
+    
+    // عرض النجوم
+    const starsHtml = getStarsHtml(avg);
+    document.getElementById('avgStars').innerHTML = starsHtml;
+  }
+  
+  // عرض التقييمات
+  const container = document.getElementById('reviewsList');
+  if (container) {
+    if (data.length === 0) {
+      container.innerHTML = '<div class="text-center text-muted">لا توجد تقييمات بعد</div>';
+    } else {
+      container.innerHTML = data.map(review => `
+        <div class="review-item">
+          <div class="review-name">
+            <strong>${review.reviewer_name}</strong>
+            <div class="review-stars">${getStarsHtml(review.rating)}</div>
+            <span class="review-date">${new Date(review.created_at).toLocaleDateString('ar')}</span>
+          </div>
+          ${review.comment ? `<div class="review-comment">${review.comment}</div>` : ''}
+        </div>
+      `).join('');
+    }
+  }
+}
+
+// تحميل التقييمات للإدارة
+async function loadReviewsAdmin() {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) return;
+  
+  const container = document.getElementById('reviewsAdminList');
+  if (container) {
+    container.innerHTML = data.map(review => `
+      <div class="faq-admin-row">
+        <div class="review-name">
+          <strong>${review.reviewer_name}</strong>
+          <div class="review-stars">${getStarsHtml(review.rating)}</div>
+          <span>${new Date(review.created_at).toLocaleDateString('ar')}</span>
+        </div>
+        <div class="review-comment">${review.comment || 'لا يوجد تعليق'}</div>
+        <div class="faq-row-actions mt-2">
+          ${!review.is_approved ? 
+            `<button class="btn-adm btn-sm btn-success" onclick="approveReview(${review.id})">✅ نشر</button>` : 
+            '<span class="badge bg-success">✅ منشور</span>'
+          }
+          <button class="btn-adm btn-sm btn-danger" onclick="deleteReview(${review.id})">🗑️ حذف</button>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// الموافقة على تقييم
+async function approveReview(id) {
+  const { error } = await supabase
+    .from('reviews')
+    .update({ is_approved: true })
+    .eq('id', id);
+  
+  if (error) {
+    showToast('خطأ', 'error');
+  } else {
+    showToast('تم نشر التقييم', 'success');
+    loadReviewsAdmin();
+    loadReviews();
+  }
+}
+
+// حذف تقييم
+async function deleteReview(id) {
+  if (!confirm('هل أنت متأكد من حذف هذا التقييم؟')) return;
+  
+  const { error } = await supabase
+    .from('reviews')
+    .delete()
+    .eq('id', id);
+  
+  if (error) {
+    showToast('خطأ', 'error');
+  } else {
+    showToast('تم الحذف', 'success');
+    loadReviewsAdmin();
+    loadReviews();
+  }
+}
+
+// دالة مساعدة: عرض النجوم
+function getStarsHtml(rating) {
+  const fullStars = Math.floor(rating);
+  const halfStar = rating % 1 >= 0.5;
+  let stars = '';
+  for (let i = 1; i <= 5; i++) {
+    if (i <= fullStars) stars += '<i class="fas fa-star"></i>';
+    else if (i === fullStars + 1 && halfStar) stars += '<i class="fas fa-star-half-alt"></i>';
+    else stars += '<i class="far fa-star"></i>';
+  }
+  return stars;
+}
+
+// إعداد نظام إدخال النجوم
+function setupStarRating() {
+  const stars = document.querySelectorAll('#ratingInput i');
+  stars.forEach(star => {
+    star.addEventListener('click', () => {
+      const rating = star.dataset.rating;
+      document.getElementById('reviewRating').value = rating;
+      stars.forEach((s, i) => {
+        if (i < rating) s.className = 'fas fa-star';
+        else s.className = 'far fa-star';
+      });
+    });
+    star.addEventListener('mouseenter', () => {
+      const rating = star.dataset.rating;
+      stars.forEach((s, i) => {
+        if (i < rating) s.classList.add('hover');
+      });
+    });
+    star.addEventListener('mouseleave', () => {
+      stars.forEach(s => s.classList.remove('hover'));
+    });
+  });
+}
+
+// بدء التشغيل
+document.addEventListener('DOMContentLoaded', () => {
+  initSupabase();
+});
+</script>
+
 </body>
 </html>

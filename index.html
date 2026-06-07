@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مدرسة النور الابتدائية</title>
+<title>مدرسة pix الابتدائية</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
   :root {
     --primary: #0d2d5e;
@@ -548,6 +549,117 @@
     #menuToggle { display: flex; }
     .hero-stats { gap: 1.8rem; }
   }
+
+
+    /* فريق المدرسة والتقييمات */
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .col-12 { width: 100%; }
+  .col-md-6 { width: calc(50% - 0.5rem); }
+  .col-lg-4 { width: calc(33.333% - 0.7rem); }
+  @media (max-width: 768px) {
+    .col-md-6, .col-lg-4 { width: 100%; }
+  }
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
+  }
+  .review-item {
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+  }
+  .review-item:last-child {
+    border-bottom: none;
+  }
+  .review-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+  .review-stars {
+    direction: ltr;
+    color: var(--accent);
+    font-size: 0.85rem;
+  }
+  .review-comment {
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .review-date {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+  .btn-adm {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+  }
+  .btn-sm {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+  .btn-danger {
+    background: #dc2626;
+    color: white;
+  }
+  .mt-2 {
+    margin-top: 0.5rem;
+  }
+  .mt-3 {
+    margin-top: 1rem;
+  }
+  .spinner-border {
+    width: 2rem;
+    height: 2rem;
+    border: 0.2em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border 0.75s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spinner-border {
+    to { transform: rotate(360deg); }
+  }
+  .text-center {
+    text-align: center;
+  }
+  .text-muted {
+    color: var(--text-muted);
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+  }
 </style>
 </head>
 <body>
@@ -592,11 +704,6 @@
     <a class="nav-link" onclick="showSection('sec-faq')">
       <span class="ni">❓</span> الأسئلة الشائعة
     </a>
-
-    <div class="nav-group-label">معلومات أخرى</div>
-    <a class="nav-link" onclick="showSection('sec-device')">
-      <span class="ni">💻</span> معلومات جهازك
-    </a>
   </nav>
 
   <div class="sidebar-footer">
@@ -613,18 +720,104 @@
       <button id="menuToggle" onclick="toggleSidebar()">☰</button>
       <span class="topbar-title" id="topbarTitle">الرئيسية</span>
     </div>
-    <div class="topbar-actions">
-      <div class="live-indicator">
-        <span class="live-dot"></span>
-        <span>مباشر</span>
+
+    <div class="nav-group-label">فريق المدرسة</div>
+    <a class="nav-link" onclick="showSection('sec-team')">
+      <span class="ni">👨‍🏫</span> فريق المدرسة
+    </a>
+
+    <div class="nav-group-label">التقييمات</div>
+    <a class="nav-link" onclick="showSection('sec-reviews')">
+      <span class="ni">⭐</span> تقييمات أولياء الأمور
+    </a>
+
+      <!-- ═══════ SECTION: TEAM (فريق المدرسة) ═══════ -->
+  <section class="page-section" id="sec-team">
+    <div class="section-head">
+      <h2>👨‍🏫 فريق المدرسة</h2>
+      <p>تعرف على طاقمنا التعليمي والإداري</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="row g-3" id="staffList">
+      <div class="col-12 text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">جاري التحميل...</span>
+        </div>
       </div>
-      <button class="refresh-btn" onclick="manualRefresh()">
-        🔄 تحديث الآن
-      </button>
-      <button class="topbar-contact-btn" onclick="document.getElementById('helpModal').classList.add('show')">
-        💬 تواصل معنا
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: REVIEWS (تقييمات المدرسة) ═══════ -->
+  <section class="page-section" id="sec-reviews">
+    <div class="section-head">
+      <h2>⭐ تقييمات أولياء الأمور</h2>
+      <p>شاركنا رأيك في مدرستنا</p>
+      <div class="section-divider"></div>
+    </div>
+
+    <!-- عرض متوسط التقييم -->
+    <div class="row mb-4">
+      <div class="col-12 text-center">
+        <div class="info-card" style="display: inline-block; min-width: 250px;">
+          <div class="average-rating">
+            <div style="font-size: 3rem; font-weight: 900; color: var(--accent);" id="avgRating">0</div>
+            <div class="stars" id="avgStars" style="font-size: 1.3rem; margin: 0.5rem 0; direction: ltr;">
+              <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+            </div>
+            <div id="totalReviews" style="color: var(--text-muted);">0 تقييم</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- إضافة تقييم جديد -->
+    <div class="info-card mb-4">
+      <div class="info-card-title" style="font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">
+        <i class="fas fa-edit"></i> أضف تقييمك
+      </div>
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <div class="form-group">
+            <label>اسمك</label>
+            <input type="text" id="reviewerName" class="form-control" placeholder="أبو محمد" style="width:100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="form-group">
+            <label>تقييمك</label>
+            <div class="rating-input" id="ratingInput" style="direction: ltr; text-align: right;">
+              <i class="far fa-star" data-rating="1" style="cursor: pointer; font-size: 1.5rem; margin: 0 2px; color: var(--accent);"></i>
+              <i class="far fa-star" data-rating="2" style="cursor: pointer; font-size: 1.5rem; margin: 0 2px; color: var(--accent);"></i>
+              <i class="far fa-star" data-rating="3" style="cursor: pointer; font-size: 1.5rem; margin: 0 2px; color: var(--accent);"></i>
+              <i class="far fa-star" data-rating="4" style="cursor: pointer; font-size: 1.5rem; margin: 0 2px; color: var(--accent);"></i>
+              <i class="far fa-star" data-rating="5" style="cursor: pointer; font-size: 1.5rem; margin: 0 2px; color: var(--accent);"></i>
+            </div>
+            <input type="hidden" id="reviewRating" value="0">
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="form-group">
+            <label>تعليقك</label>
+            <textarea id="reviewComment" class="form-control" rows="1" placeholder="شاركنا رأيك..." style="width:100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;"></textarea>
+          </div>
+        </div>
+      </div>
+      <button class="btn-gold" onclick="submitReview()" style="margin-top: 1rem; border: none; cursor: pointer;">
+        <i class="fas fa-paper-plane"></i> إرسال التقييم
       </button>
     </div>
+
+    <!-- عرض التقييمات -->
+    <div class="info-card">
+      <div class="info-card-title" style="font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">
+        <i class="fas fa-comments"></i> آراء أولياء الأمور
+      </div>
+      <div id="reviewsList" class="reviews-list">
+        <div class="text-center text-muted"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
+      </div>
+    </div>
+  </section>
+
   </div>
 
   <!-- ═══════ SECTION: HOME ═══════ -->
@@ -771,23 +964,6 @@
     </div>
   </section>
 
-  <!-- ═══════ SECTION: DEVICE ═══════ -->
-  <section class="page-section" id="sec-device">
-    <div class="section-head">
-      <h2>💻 معلومات جهازك</h2>
-      <p>بيانات تلقائية من متصفحك</p>
-      <div class="section-divider"></div>
-    </div>
-    <div class="device-card">
-      <div class="device-row"><span class="device-label">🌐 المتصفح</span><span class="device-value" id="devBrowser">—</span></div>
-      <div class="device-row"><span class="device-label">💻 نظام التشغيل</span><span class="device-value" id="devOS">—</span></div>
-      <div class="device-row"><span class="device-label">📱 نوع الجهاز</span><span class="device-value" id="devType">—</span></div>
-      <div class="device-row"><span class="device-label">🖥️ الدقة</span><span class="device-value" id="devResolution">—</span></div>
-      <div class="device-row"><span class="device-label">🌍 اللغة</span><span class="device-value" id="devLang">—</span></div>
-      <div class="device-row"><span class="device-label">⏰ المنطقة الزمنية</span><span class="device-value" id="devTZ">—</span></div>
-      <div class="device-row"><span class="device-label">📅 التاريخ والوقت</span><span class="device-value" id="devDateTime">—</span></div>
-    </div>
-  </section>
 
 </div>
 
@@ -809,19 +985,12 @@
   </div>
 </div>
 
+
+
 <script src="js/supabase.js"></script>
 <script src="js/main.js"></script>
 <script>
-// ─── SECTION NAVIGATION ───
-const sectionTitles = {
-  'sec-home': 'الرئيسية',
-  'sec-info': 'عن المدرسة',
-  'sec-gallery': 'الصور المدرسية',
-  'sec-address': 'الموقع والعنوان',
-  'sec-contact': 'تواصل معنا',
-  'sec-faq': 'الأسئلة الشائعة',
-  'sec-device': 'معلومات جهازك'
-};
+
 
 function showSection(id) {
   document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
@@ -861,6 +1030,322 @@ function initFaqAccordion() {
     }
   });
 }
+
+
+// =====================================================
+// دوال إدارة فريق المدرسة
+// =====================================================
+
+// إضافة موظف
+async function addStaff() {
+  const name = document.getElementById('staffName').value;
+  const position = document.getElementById('staffPosition').value;
+  const qualification = document.getElementById('staffQualification').value;
+  const subject = document.getElementById('staffSubject').value;
+  const email = document.getElementById('staffEmail').value;
+  const phone = document.getElementById('staffPhone').value;
+  const bio = document.getElementById('staffBio').value;
+  const order = document.getElementById('staffOrder').value;
+  const imageFile = document.getElementById('staffImage').files[0];
+  
+  if (!name || !position) {
+    showToast('الاسم والمنصب مطلوبان', 'error');
+    return;
+  }
+  
+  let imageUrl = null;
+  
+  if (imageFile) {
+    const fileName = `staff/${Date.now()}-${imageFile.name}`;
+    const { data, error } = await supabase.storage
+      .from('staff-images')
+      .upload(fileName, imageFile);
+    
+    if (!error) {
+      const { data: publicUrl } = supabase.storage
+        .from('staff-images')
+        .getPublicUrl(fileName);
+      imageUrl = publicUrl.publicUrl;
+    }
+  }
+  
+  const { data, error } = await supabase
+    .from('staff')
+    .insert([{
+      name, position, qualification, subject,
+      email, phone, bio, image_url: imageUrl,
+      display_order: parseInt(order) || 0
+    }]);
+  
+  if (error) {
+    showToast('خطأ: ' + error.message, 'error');
+  } else {
+    showToast('تم إضافة العضو بنجاح', 'success');
+    loadStaff();
+    // تفريغ الحقول
+    document.getElementById('staffName').value = '';
+    document.getElementById('staffPosition').value = '';
+    document.getElementById('staffQualification').value = '';
+    document.getElementById('staffSubject').value = '';
+    document.getElementById('staffEmail').value = '';
+    document.getElementById('staffPhone').value = '';
+    document.getElementById('staffBio').value = '';
+    document.getElementById('staffImage').value = '';
+  }
+}
+
+// تحميل فريق المدرسة
+async function loadStaff() {
+  const { data, error } = await supabase
+    .from('staff')
+    .select('*')
+    .order('display_order', { ascending: true });
+  
+  if (error) {
+    console.error(error);
+    return;
+  }
+  
+  const container = document.getElementById('staffList');
+  if (container) {
+    container.innerHTML = data.map(member => `
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="info-card" style="text-align: center;">
+          ${member.image_url ? 
+            `<img src="${member.image_url}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 0 auto 1rem; display: block;">` :
+            `<div class="icon" style="margin: 0 auto 1rem; width: 80px; height: 80px; font-size: 2rem;">👨‍🏫</div>`
+          }
+          <h3>${member.name}</h3>
+          <p style="color: var(--accent); font-weight: bold;">${member.position}</p>
+          ${member.qualification ? `<p><small>📜 ${member.qualification}</small></p>` : ''}
+          ${member.subject ? `<p><small>📚 ${member.subject}</small></p>` : ''}
+          ${member.bio ? `<p><small>${member.bio}</small></p>` : ''}
+          <div class="mt-2">
+            <button class="btn-adm btn-sm btn-danger" onclick="deleteStaff(${member.id})">
+              <i class="fas fa-trash"></i> حذف
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// حذف موظف
+async function deleteStaff(id) {
+  if (!confirm('هل أنت متأكد من حذف هذا العضو؟')) return;
+  
+  const { error } = await supabase
+    .from('staff')
+    .delete()
+    .eq('id', id);
+  
+  if (error) {
+    showToast('خطأ في الحذف', 'error');
+  } else {
+    showToast('تم الحذف', 'success');
+    loadStaff();
+  }
+}
+
+// =====================================================
+// دوال نظام التقييم
+// =====================================================
+
+// إرسال تقييم جديد
+async function submitReview() {
+  const name = document.getElementById('reviewerName')?.value;
+  const rating = document.getElementById('reviewRating')?.value;
+  const comment = document.getElementById('reviewComment')?.value;
+  
+  if (!name || rating == 0) {
+    showToast('الاسم والتقييم مطلوبان', 'error');
+    return;
+  }
+  
+  const { data, error } = await supabase
+    .from('reviews')
+    .insert([{
+      reviewer_name: name,
+      rating: parseInt(rating),
+      comment: comment || '',
+      is_approved: false
+    }]);
+  
+  if (error) {
+    showToast('حدث خطأ، حاول مرة أخرى', 'error');
+  } else {
+    showToast('شكراً لتقييمك! سيتم نشره بعد المراجعة', 'success');
+    document.getElementById('reviewerName').value = '';
+    document.getElementById('reviewRating').value = '0';
+    document.getElementById('reviewComment').value = '';
+    // إعادة تعيين النجوم
+    document.querySelectorAll('#ratingInput i').forEach(star => {
+      star.className = 'far fa-star';
+    });
+    loadReviews();
+  }
+}
+
+// تحميل التقييمات المعتمدة
+async function loadReviews() {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('*')
+    .eq('is_approved', true)
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error(error);
+    return;
+  }
+  
+  // حساب المتوسط
+  if (data.length > 0) {
+    const avg = data.reduce((sum, r) => sum + r.rating, 0) / data.length;
+    document.getElementById('avgRating').textContent = avg.toFixed(1);
+    document.getElementById('totalReviews').textContent = `${data.length} تقييم`;
+    
+    // عرض النجوم
+    const starsHtml = getStarsHtml(avg);
+    document.getElementById('avgStars').innerHTML = starsHtml;
+  }
+  
+  // عرض التقييمات
+  const container = document.getElementById('reviewsList');
+  if (container) {
+    if (data.length === 0) {
+      container.innerHTML = '<div class="text-center text-muted">لا توجد تقييمات بعد</div>';
+    } else {
+      container.innerHTML = data.map(review => `
+        <div class="review-item">
+          <div class="review-name">
+            <strong>${review.reviewer_name}</strong>
+            <div class="review-stars">${getStarsHtml(review.rating)}</div>
+            <span class="review-date">${new Date(review.created_at).toLocaleDateString('ar')}</span>
+          </div>
+          ${review.comment ? `<div class="review-comment">${review.comment}</div>` : ''}
+        </div>
+      `).join('');
+    }
+  }
+}
+
+// تحميل التقييمات للإدارة
+async function loadReviewsAdmin() {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) return;
+  
+  const container = document.getElementById('reviewsAdminList');
+  if (container) {
+    container.innerHTML = data.map(review => `
+      <div class="faq-admin-row">
+        <div class="review-name">
+          <strong>${review.reviewer_name}</strong>
+          <div class="review-stars">${getStarsHtml(review.rating)}</div>
+          <span>${new Date(review.created_at).toLocaleDateString('ar')}</span>
+        </div>
+        <div class="review-comment">${review.comment || 'لا يوجد تعليق'}</div>
+        <div class="faq-row-actions mt-2">
+          ${!review.is_approved ? 
+            `<button class="btn-adm btn-sm btn-success" onclick="approveReview(${review.id})">✅ نشر</button>` : 
+            '<span class="badge bg-success">✅ منشور</span>'
+          }
+          <button class="btn-adm btn-sm btn-danger" onclick="deleteReview(${review.id})">🗑️ حذف</button>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// الموافقة على تقييم
+async function approveReview(id) {
+  const { error } = await supabase
+    .from('reviews')
+    .update({ is_approved: true })
+    .eq('id', id);
+  
+  if (error) {
+    showToast('خطأ', 'error');
+  } else {
+    showToast('تم نشر التقييم', 'success');
+    loadReviewsAdmin();
+    loadReviews();
+  }
+}
+
+// حذف تقييم
+async function deleteReview(id) {
+  if (!confirm('هل أنت متأكد من حذف هذا التقييم؟')) return;
+  
+  const { error } = await supabase
+    .from('reviews')
+    .delete()
+    .eq('id', id);
+  
+  if (error) {
+    showToast('خطأ', 'error');
+  } else {
+    showToast('تم الحذف', 'success');
+    loadReviewsAdmin();
+    loadReviews();
+  }
+}
+
+// دالة مساعدة: عرض النجوم
+function getStarsHtml(rating) {
+  const fullStars = Math.floor(rating);
+  const halfStar = rating % 1 >= 0.5;
+  let stars = '';
+  for (let i = 1; i <= 5; i++) {
+    if (i <= fullStars) stars += '<i class="fas fa-star"></i>';
+    else if (i === fullStars + 1 && halfStar) stars += '<i class="fas fa-star-half-alt"></i>';
+    else stars += '<i class="far fa-star"></i>';
+  }
+  return stars;
+}
+
+
+// عناوين الأقسام
+const sectionTitles = {
+  'sec-home': 'الرئيسية',
+  'sec-info': 'عن المدرسة',
+  'sec-gallery': 'الصور المدرسية',
+  'sec-address': 'الموقع والعنوان',
+  'sec-contact': 'تواصل معنا',
+  'sec-faq': 'الأسئلة الشائعة',
+  'sec-team': 'فريق المدرسة',
+  'sec-reviews': 'تقييمات أولياء الأمور'
+};
+
+// إعداد نظام إدخال النجوم
+function setupStarRating() {
+  const stars = document.querySelectorAll('#ratingInput i');
+  stars.forEach(star => {
+    star.addEventListener('click', () => {
+      const rating = star.dataset.rating;
+      document.getElementById('reviewRating').value = rating;
+      stars.forEach((s, i) => {
+        if (i < rating) s.className = 'fas fa-star';
+        else s.className = 'far fa-star';
+      });
+    });
+    star.addEventListener('mouseenter', () => {
+      const rating = star.dataset.rating;
+      stars.forEach((s, i) => {
+        if (i < rating) s.classList.add('hover');
+      });
+    });
+    star.addEventListener('mouseleave', () => {
+      stars.forEach(s => s.classList.remove('hover'));
+    });
+  });
+}
 </script>
+
 </body>
 </html>
